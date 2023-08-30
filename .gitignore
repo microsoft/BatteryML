@@ -1,0 +1,7 @@
+data
+**/__pycache__/
+.vscode/
+!src/data/
+workspaces/
+experiments/
+**/cache/

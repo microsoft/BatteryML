@@ -1,0 +1,21 @@
+model:
+    name: 'PCRRULPredictor'
+    n_components: 12
+train_test_split:
+    name: 'MATRCLOTestTrainTestSplitter'
+    cell_data_path: 'data/processed/MATR'
+feature:
+    name: 'VoltageCapacityMatrixFeatureExtractor'
+    diff_base: 8
+    max_cycle_index: 128
+    cycles_to_keep: 128
+    use_precalculated_qdlin: True
+label:
+    name: 'RULLabelAnnotator'
+feature_transformation:
+    name: 'ZScoreDataTransformation'
+label_transformation:
+    name: 'SequentialDataTransformation'
+    transformations:
+        - name: 'LogScaleDataTransformation'
+        - name: 'ZScoreDataTransformation'

@@ -1,0 +1,24 @@
+model:
+    name: 'LSTMRULPredictor'
+    in_channels: 1
+    channels: 32
+    input_height: 100
+    input_width: 1000
+    epochs: 1000
+    batch_size: 128
+    evaluate_freq: 100
+train_test_split:
+    name: 'MATRCLOTestTrainTestSplitter'
+    cell_data_path: 'data/processed/MATR'
+feature:
+    name: 'VoltageCapacityMatrixFeatureExtractor'
+    diff_base: 9
+    max_cycle_index: 99
+    use_precalculated_qdlin: True
+label:
+    name: 'RULLabelAnnotator'
+label_transformation:
+    name: 'SequentialDataTransformation'
+    transformations:
+        - name: 'LogScaleDataTransformation'
+        - name: 'ZScoreDataTransformation'
