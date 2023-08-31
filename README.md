@@ -24,20 +24,14 @@ We hope BatteryML can empower both battery researchers and data scientists to ga
 - **Extensible and Customizable:** BatteryML provides flexible interfaces to support further extensions and customizations, making it a versatile tool for potential applications in battery research.
 
 ## Quick Start
-### Installation
-Installation of dependency packages
+
+Install the dependencies
 
 ```shell
 pip install -r requirements.txt
 ```
 
-Install the CUDA extensions of smoothing functions.
-
-```shell
-cd ops; pip install -e .
-```
-
-### Usage 
+Download the raw data and run preprocessing scripts according to this [instruction](./data_prepare.md).
 
 You only need to set up the data, feature, models .etc in the config file then run the following code
 ```python
