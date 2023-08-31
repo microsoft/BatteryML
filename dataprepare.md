@@ -112,10 +112,17 @@ python scripts/preprocess.py
 
 ## Reference
 [1] Severson et al. "Data-driven prediction of battery cycle life before capacity degradation." Nature Energy volume 4, pages 383–391 (2019).
+
 [2] Attia et al. "Closed-loop optimization of fast-charging protocols for batteries with machine learning." Nature 578, 397–402 (2020).
+
 [3] Ma et al. "Real-time personalized health status prediction of lithium-ion batteries using deep transfer learning." Energy & Environmental Science 15.10 (2022): 4083-4094.
+
 [4] He et al. "Prognostics of lithium-ion batteries based on dempster–shafer theory and the bayesian monte carlo method." volume 196(23), pages 10314–10321, 2011.
+
 [5] Li et al. "One-shot battery degradation trajectory prediction with deep learning." Journal of power sources, page 230024, 2021.
+
 [6] Preger et al. "Degradation of commercial lithium-ion cells as a function of chemistry and cycling conditions." Journal of The Electrochemical Society, 167:120532, 2020.
+
 [7] Juarez-Robles et al. "Degradation-safety analytics in lithium-ion cells: Part i. aging under charge/discharge cycling." Journal of The Electrochemical Society, 167:160510, 2020.
+
 [8] Devie et al. "Intrinsic variability in the degradation of a batch of commercial 18650 lithium-ion cells." Energies, 11:1031, 2018.
