@@ -4,11 +4,11 @@
 from sklearn.linear_model import LinearRegression
 
 from src.builders import MODELS
-from src.models.sklearn_model import SkleanModel
+from src.models.sklearn_model import SklearnModel
 
 
 @MODELS.register()
-class LinearRegressionRULPredictor(SkleanModel):
+class LinearRegressionRULPredictor(SklearnModel):
     def __init__(self, *args, workspace: str = None, **kwargs):
-        SkleanModel.__init__(self, workspace)
+        SklearnModel.__init__(self, workspace)
         self.model = LinearRegression(*args, **kwargs)
