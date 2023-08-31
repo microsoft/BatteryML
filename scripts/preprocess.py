@@ -43,6 +43,9 @@ if __name__ == '__main__':
     ])
 
     for path in pbar:
+        if not path.exists():
+            continue
+
         dataset = path.stem
         store_dir = processed_data_path / dataset
 
