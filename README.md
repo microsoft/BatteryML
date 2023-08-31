@@ -31,7 +31,7 @@ Install the dependencies
 pip install -r requirements.txt
 ```
 
-Download the raw data and run preprocessing scripts according to this [instruction](./data_prepare.md).
+Download the raw data and run preprocessing scripts according to this [instruction](./dataprepare.md).
 
 You only need to set up the data, feature, models .etc in the config file then run the following code
 ```python
