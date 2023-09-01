@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "BatteryML"
+description = "An Open-Source Tool for Machine Learning on Battery Degradation"
+version = "0.0.1"
+authors = [{"Microsoft Corporation": "batteryml-info@microsoft.com"}]
+
+dependencies = [
+    "pandas",
+    "addict",
+    "fire",
+    "numpy==1.24",
+    "tqdm",
+    "scipy",
+    "scikit-learn",
+    "pyyaml",
+    "numba",
+    "matplotlib",
+    "torch",
+    "h5py"
+]
