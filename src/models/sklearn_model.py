@@ -10,7 +10,7 @@ from src.data.databundle import DataBundle
 from .base import BaseModel
 
 
-class SkleanModel(BaseModel, abc.ABC):
+class SklearnModel(BaseModel, abc.ABC):
     def fit(self, dataset: DataBundle, timestamp: str = None) -> None:
         device = dataset.device
         dataset = dataset.to('cpu')
