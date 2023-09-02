@@ -6,11 +6,11 @@ from sklearn.pipeline import make_pipeline
 from sklearn.linear_model import LinearRegression
 
 from batteryml.builders import MODELS
-from batteryml.models.sklearn_model import SkleanModel
+from batteryml.models.sklearn_model import SklearnModel
 
 
 @MODELS.register()
-class PCRRULPredictor(SkleanModel):
+class PCRRULPredictor(SklearnModel):
     def __init__(self, *args, workspace: str = None, **kwargs):
-        SkleanModel.__init__(self, workspace)
+        SklearnModel.__init__(self, workspace)
         self.model = make_pipeline(PCA(*args, **kwargs), LinearRegression())

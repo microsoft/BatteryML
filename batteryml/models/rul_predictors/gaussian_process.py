@@ -5,12 +5,12 @@ from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, DotProduct
 
 from batteryml.builders import MODELS
-from batteryml.models.sklearn_model import SkleanModel
+from batteryml.models.sklearn_model import SklearnModel
 
 
 @MODELS.register()
-class GaussianProcessRULPredictor(SkleanModel):
+class GaussianProcessRULPredictor(SklearnModel):
     def __init__(self, *args, workspace: str = None, **kwargs):
-        SkleanModel.__init__(self, workspace)
+        SklearnModel.__init__(self, workspace)
         kernel = DotProduct() + RBF()
         self.model = GaussianProcessRegressor(kernel)

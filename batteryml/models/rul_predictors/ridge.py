@@ -4,11 +4,11 @@
 from sklearn.linear_model import Ridge
 
 from batteryml.builders import MODELS
-from batteryml.models.sklearn_model import SkleanModel
+from batteryml.models.sklearn_model import SklearnModel
 
 
 @MODELS.register()
-class RidgeRULPredictor(SkleanModel):
+class RidgeRULPredictor(SklearnModel):
     def __init__(self, *args, workspace: str = None, **kwargs):
-        SkleanModel.__init__(self, workspace)
+        SklearnModel.__init__(self, workspace)
         self.model = Ridge(**kwargs)

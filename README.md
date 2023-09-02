@@ -25,15 +25,18 @@ We hope BatteryML can empower both battery researchers and data scientists to ga
 
 ## Quick Start
 
-Install the dependencies
+### Install the dependencies
 
 ```shell
 pip install -r requirements.txt
 ```
+### Download Raw Data and Run Preprocessing Scripts
 
-Download the raw data and run preprocessing scripts according to this [instruction](./dataprepare.md).
+To begin, download the raw data and execute the preprocessing scripts as per the provided [instruction](./dataprepare.md).
 
-You only need to set up the data, feature, models .etc in the config file then run the following code
+
+### Run Pipeline
+To get started, simply configure the data, features, models, etc. in the config file. Once you've set everything up, run the following code:
 ```python
 from scripts.pipeline import Pipeline
 
@@ -44,12 +47,11 @@ pipeline = Pipeline(config_path=`path/to/your/config`,
 
 train_loss , test_loss = pipeline.train()
 ```
+Note: Replace `path/to/your/config` with the actual config_path.
 
-Besides, we have prepared an example, [baseline](./baseline.ipynb).
+Besides, we have prepared an example [baseline](./baseline.ipynb).
 
 
-
-## BatteryML capabilities in a glance
 
 ## Documentation
 
