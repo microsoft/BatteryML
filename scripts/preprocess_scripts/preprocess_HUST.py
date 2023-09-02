@@ -9,7 +9,7 @@ from tqdm import tqdm
 from numba import njit
 from pathlib import Path
 
-from src import CycleData, BatteryData, CyclingProtocol
+from batteryml import CycleData, BatteryData, CyclingProtocol
 
 
 # See https://www.rsc.org/suppdata/d2/ee/d2ee01676a/d2ee01676a1.pdf

@@ -7,7 +7,7 @@ import pandas as pd
 from tqdm import tqdm
 from pathlib import Path
 
-from src import BatteryData, CycleData, CyclingProtocol
+from batteryml import BatteryData, CycleData, CyclingProtocol
 
 
 def preprocess(path):
