@@ -16,7 +16,7 @@ class FullModelFeatureExtractor(SeversonFeatureExtractor):
             'Slope of linear fit to the capacity curve',
             'Intercept of linear fit to the capacity curve',
             'Early discharge capacity',
-            'Averange early charge time',
+            'Average early charge time',
             'Integral of temperature over time',
             'Minimum internal resistance',
             'Internal resistance change'

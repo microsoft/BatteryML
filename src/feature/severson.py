@@ -150,7 +150,7 @@ class SeversonFeatureExtractor(BaseFeatureExtractor):
             return model.intercept_
 
         # Other features
-        if feature == 'Averange early charge time':
+        if feature == 'Average early charge time':
             charge_time = []
             for cycle in range(4):
                 cycle_data = cell_data.cycle_data[cycle]
