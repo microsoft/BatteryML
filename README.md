@@ -43,7 +43,7 @@ from scripts.pipeline import Pipeline
 pipeline = Pipeline(config_path=`path/to/your/config`,
                     device='cuda',
                     metric='RMSE',
-                    workspace='workspaces'
+                    workspace='workspaces')
 
 train_loss , test_loss = pipeline.train()
 ```
