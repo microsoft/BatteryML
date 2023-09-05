@@ -9,7 +9,7 @@ from tqdm import tqdm
 from pathlib import Path
 
 from src import BatteryData, CycleData, CyclingProtocol
-
+from scripts.preprocess import tqdm_wrapper
 
 def preprocess(path):
     path = Path(path)
@@ -22,7 +22,7 @@ def preprocess(path):
 
     # Load from .mat files
     data_batches = []
-    pbar = tqdm(raw_files, leave=False)
+    pbar = tqdm_wrapper(raw_files)
     for indx, f in enumerate(pbar):
         pbar.set_description(f'Loading {f.stem}')
 
@@ -39,7 +39,7 @@ def load_batch(file, k):
     batch = f['batch']
     num_cells = batch['summary'].shape[0]
     bat_dict = {}
-    for i in tqdm(range(num_cells), desc='Processing cells', leave=False):
+    for i in tqdm_wrapper(range(num_cells), desc='Processing cells'):
         cl = f[batch['cycle_life'][i, 0]][:]
         policy = f[batch['policy_readable'][i, 0]][:].tobytes()[::2].decode()
         summary_IR = np.hstack(
