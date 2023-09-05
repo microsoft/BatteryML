@@ -13,7 +13,7 @@ from pathlib import Path
 from scipy.signal import medfilt
 
 from src import BatteryData, CycleData
-
+from scripts.preprocess import tqdm_wrapper
 
 @njit
 def calc_Q(I, t, is_charge):  # noqa
@@ -100,7 +100,7 @@ def load_txt(txt_file):
 def preprocess(path):
     path = Path(path)
     cells = [x.stem for x in path.glob('*.zip')]
-    pbar = tqdm(cells, leave=False)
+    pbar = tqdm_wrapper(cells)
     batteries = []
     for cell in pbar:
         rawdatadir = path / cell
@@ -122,7 +122,7 @@ def preprocess(path):
 
         df = pd.concat([
             load_txt(file) if file.suffix == '.txt' else load_excel(file)
-            for file in tqdm(files, desc='Load data from files', leave=False)
+            for file in tqdm_wrapper(files, desc='Load data from files')
         ])
         df = df.sort_values(['date', 'Test_Time(s)'])
         df['Cycle_Index'] = organize_cycle_index(df['Cycle_Index'].values)
