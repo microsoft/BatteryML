@@ -15,7 +15,7 @@ def preprocess(path):
         x.stem.split('_timeseries')[0]
         for x in path.glob('*timeseries*'))
     batteries = []
-    for cell in tqdm(cells, desc='Processing OX cells', leave=False):
+    for cell in tqdm(cells, desc='Processing OX cells', leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}"):
         timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
         timeseries_df = pd.read_csv(timeseries_file)
         # Nominal capacity is 740mAh, which leads to too short

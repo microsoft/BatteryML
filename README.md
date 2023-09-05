@@ -31,9 +31,16 @@ We hope BatteryML can empower both battery researchers and data scientists to ga
 pip install -r requirements.txt
 ```
 ### Download Raw Data and Run Preprocessing Scripts
+Download the raw data and execute the preprocessing scripts as per the provided [instruction](./dataprepare.md). You can also use the code below to download public datasets and convert them to BatteryML's uniform data format.
 
-To begin, download the raw data and execute the preprocessing scripts as per the provided [instruction](./dataprepare.md).
+```python
+# Download battery public datasets. If `dataset_name` is set, only the specified dataset will be downloaded. If not set (None), all available preset datasets will be downloaded, including HUST, MATR, CALCE, RWTH, and KIT_FOBOSS.
+download_raw_data(dataset_name='matr')
 
+# Convert data format to BatteryML's unified data format. If `dataset_name` is set, only the specified dataset will be converted. If not set (None), all datasets in the BatteryML/data/raw folder will be processed.
+transfer_data_format(dataset_name='matr')
+
+```
 
 ### Run Pipeline
 To get started, simply configure the data, features, models, etc. in the config file. Once you've set everything up, run the following code:

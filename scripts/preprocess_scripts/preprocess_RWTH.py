@@ -87,19 +87,19 @@ def preprocess(path):
     # Unzip files for all cells. We skip those begin-of-life tests.
     desc = 'Unzip RWTH files to get zip file for each cell'
     with zipfile.ZipFile(subdir / 'Rawdata.zip', 'r') as zip_ref:
-        for file in tqdm(zip_ref.namelist(), desc=desc, leave=False):
+        for file in tqdm(zip_ref.namelist(), desc=desc, leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}"):
             if "BOL" not in file and not (subdir / file).exists():
                 zip_ref.extract(file, subdir)
     # Unzip all zip files into csv files
     datadir = subdir / 'Rohdaten'
     desc = 'Unzip the zip file of each cell'
-    for file in tqdm(list(datadir.glob('*.zip')), desc=desc, leave=False):
+    for file in tqdm(list(datadir.glob('*.zip')), desc=desc, leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}"):
         if not (datadir / f'{file.stem}.csv').exists():
             with zipfile.ZipFile(file, 'r') as zip_ref:
                 zip_ref.extractall(datadir)
 
     cells = [f'{i:03}' for i in range(2, 50)]
-    pbar = tqdm(cells, leave=False)
+    pbar = tqdm(cells, leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}")
     batteries = []
     for cell in pbar:
         name = f'RWTH_{cell}'
@@ -117,7 +117,7 @@ def preprocess(path):
 
         cycles = []
         desc = f'Processing each cycles of cell {name}'
-        for i in tqdm(range(1, len(cycle_ends)), desc=desc, leave=False):
+        for i in tqdm(range(1, len(cycle_ends)), desc=desc, leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}"):
             # Process the cycle data
             cycle_data = df.iloc[cycle_ends[i-1]:cycle_ends[i]]
             V = cycle_data['Spannung'].values

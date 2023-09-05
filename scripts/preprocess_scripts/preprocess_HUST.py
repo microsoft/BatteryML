@@ -112,7 +112,7 @@ def preprocess(path):
     path = Path(path)
 
     with zipfile.ZipFile(path / 'hust_data.zip', 'r') as zip_ref:
-        pbar = tqdm(zip_ref.namelist(), leave=False)
+        pbar = tqdm(zip_ref.namelist(), leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}")
         for file in pbar:
             pbar.set_description(f'Unzip HUST file {file}')
             zip_ref.extract(file, path)
@@ -120,7 +120,7 @@ def preprocess(path):
     datadir = path / 'our_data'
     desc = 'Processing cells'
     batteries = []
-    for cell_file in tqdm(list(datadir.glob('*.pkl')), desc=desc, leave=False):
+    for cell_file in tqdm(list(datadir.glob('*.pkl')), desc=desc, leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}"):
         cell_id = cell_file.stem
         cell_name = f'HUST_{cell_id}'
         with open(cell_file, 'rb') as fin:

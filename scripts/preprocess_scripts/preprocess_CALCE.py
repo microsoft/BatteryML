@@ -100,7 +100,7 @@ def load_txt(txt_file):
 def preprocess(path):
     path = Path(path)
     cells = [x.stem for x in path.glob('*.zip')]
-    pbar = tqdm(cells, leave=False)
+    pbar = tqdm(cells, leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}")
     batteries = []
     for cell in pbar:
         rawdatadir = path / cell
@@ -122,7 +122,7 @@ def preprocess(path):
 
         df = pd.concat([
             load_txt(file) if file.suffix == '.txt' else load_excel(file)
-            for file in tqdm(files, desc='Load data from files', leave=False)
+            for file in tqdm(files, desc='Load data from files', leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}")
         ])
         df = df.sort_values(['date', 'Test_Time(s)'])
         df['Cycle_Index'] = organize_cycle_index(df['Cycle_Index'].values)

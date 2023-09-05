@@ -5,6 +5,7 @@ import os
 import importlib
 
 from tqdm import tqdm
+
 from pathlib import Path
 
 
@@ -26,21 +27,35 @@ def import_function(path: Path or str) -> callable:
     return function
 
 
-if __name__ == '__main__':
+def transfer_data_format(dataset_name=None):
+    """
+    Convert data format to BatteryML's unified data format.
+
+    - dataset_name (str, optional): Name of the specific dataset to convert.
+    - If set, only the specified dataset will be converted.
+    - If not set (None), all datasets in the BatteryML/data/raw folder will be processed.
+
+    Currently supported datasets for preprocessing: SNL, OX, UL_PUR, HNEI, MATR, HUST, RWTH, and CALCE. More data formats will be added in the future.  
+    """
     script_path = Path(__file__).parent / 'preprocess_scripts'
     raw_data_path = Path(__file__).parent.parent / 'data/raw'
     processed_data_path = Path(__file__).parent.parent / 'data/processed'
 
-    pbar = tqdm([
-        raw_data_path / 'SNL',
-        raw_data_path / 'OX',
-        raw_data_path / 'UL_PUR',
-        raw_data_path / 'HNEI',
-        raw_data_path / 'MATR',
-        raw_data_path / 'HUST',
-        raw_data_path / 'RWTH',
-        raw_data_path / 'CALCE',
-    ])
+    if isinstance(dataset_name, str) and dataset_name:
+        pbar = tqdm([
+            raw_data_path / dataset_name.upper(),
+        ], position=0)
+    else:
+        pbar = tqdm([
+            raw_data_path / 'SNL',
+            raw_data_path / 'OX',
+            raw_data_path / 'UL_PUR',
+            raw_data_path / 'HNEI',
+            raw_data_path / 'MATR',
+            raw_data_path / 'HUST',
+            raw_data_path / 'RWTH',
+            raw_data_path / 'CALCE',
+        ], position=0)
 
     for path in pbar:
         if not path.exists():
@@ -65,6 +80,9 @@ if __name__ == '__main__':
             continue
 
         # Dump to disk, one file per cell
-        for cell in tqdm(cells, desc='Save the cells to disk', leave=False):
+        for cell in tqdm(cells, desc='Save the cells to disk', leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}"):
             store_path = store_dir / f'{cell.cell_id}.pkl'
             cell.dump(store_path)
+
+if __name__ == '__main__':
+    transfer_data_format()

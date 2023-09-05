@@ -17,7 +17,7 @@ def preprocess(path):
         for x in path.glob('*HNEI*timeseries*'))
 
     batteries = []
-    for cell in tqdm(cells, desc='Processing HNEI cells', leave=False):
+    for cell in tqdm(cells, desc='Processing HNEI cells', leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}"):
         timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
         cycle_data_file = next(path.glob(f'*{cell}*cycle_data*'))
         timeseries_df = pd.read_csv(timeseries_file)
