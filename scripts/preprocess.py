@@ -29,7 +29,7 @@ def import_function(path: Path or str) -> callable:
     return function
 
 
-def transfer_data_format(dataset_name=None):
+def convert_data_format(dataset_name=None):
     """
     Convert data format to BatteryML's unified data format.
 
@@ -87,4 +87,4 @@ def transfer_data_format(dataset_name=None):
             cell.dump(store_path)
 
 if __name__ == '__main__':
-    transfer_data_format()
+    convert_data_format()
