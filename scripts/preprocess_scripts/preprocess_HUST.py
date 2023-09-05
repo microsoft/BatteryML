@@ -10,7 +10,7 @@ from numba import njit
 from pathlib import Path
 
 from src import CycleData, BatteryData, CyclingProtocol
-
+from scripts.preprocess import tqdm_wrapper
 
 # See https://www.rsc.org/suppdata/d2/ee/d2ee01676a/d2ee01676a1.pdf
 DISCHARGE_RATES = {
@@ -112,7 +112,7 @@ def preprocess(path):
     path = Path(path)
 
     with zipfile.ZipFile(path / 'hust_data.zip', 'r') as zip_ref:
-        pbar = tqdm(zip_ref.namelist(), leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}")
+        pbar = tqdm_wrapper(zip_ref.namelist())
         for file in pbar:
             pbar.set_description(f'Unzip HUST file {file}')
             zip_ref.extract(file, path)
@@ -120,7 +120,7 @@ def preprocess(path):
     datadir = path / 'our_data'
     desc = 'Processing cells'
     batteries = []
-    for cell_file in tqdm(list(datadir.glob('*.pkl')), desc=desc, leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}"):
+    for cell_file in tqdm_wrapper(list(datadir.glob('*.pkl')), desc=desc):
         cell_id = cell_file.stem
         cell_name = f'HUST_{cell_id}'
         with open(cell_file, 'rb') as fin:

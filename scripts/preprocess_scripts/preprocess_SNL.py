@@ -8,7 +8,7 @@ from tqdm import tqdm
 from pathlib import Path
 
 from src import BatteryData, CycleData, CyclingProtocol
-
+from scripts.preprocess import tqdm_wrapper
 
 def get_capacity(cell_name):
     if 'NMC' in cell_name:
@@ -57,7 +57,7 @@ def preprocess(path):
         'SNL_18650_NMC_25C_20-80_0.5-3C_b']
     cells = tuple(cell for cell in cells if cell not in to_drop)
     batteries = []
-    for cell in tqdm(cells, desc='Processing SNL cells', leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}"):
+    for cell in tqdm_wrapper(cells, desc='Processing SNL cells'):
         timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
         cycle_data_file = next(path.glob(f'*{cell}*cycle_data*'))
         timeseries_df = pd.read_csv(timeseries_file)

@@ -8,6 +8,8 @@ from tqdm import tqdm
 
 from pathlib import Path
 
+def tqdm_wrapper(iterable, desc=None, *args, **kwargs):
+    return tqdm(iterable, desc=desc, leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}", *args, **kwargs)
 
 def import_function(path: Path or str) -> callable:
     # convert the path to a string if it is a pathlib.Path object
@@ -80,7 +82,7 @@ def transfer_data_format(dataset_name=None):
             continue
 
         # Dump to disk, one file per cell
-        for cell in tqdm(cells, desc='Save the cells to disk', leave=False, position=1, bar_format="{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt}"):
+        for cell in tqdm_wrapper(cells, desc='Save the cells to disk'):
             store_path = store_dir / f'{cell.cell_id}.pkl'
             cell.dump(store_path)
 
