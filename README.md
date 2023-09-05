@@ -34,7 +34,7 @@ pip install -r requirements.txt
 Download the raw data and execute the preprocessing scripts as per the provided [instruction](./dataprepare.md). You can also use the code below to download public datasets and convert them to BatteryML's uniform data format.
 
 ```python
-# Download battery public datasets. If `dataset_name` is set, only the specified dataset will be downloaded. If not set (None), all available preset datasets will be downloaded, including HUST, MATR, CALCE, RWTH, and KIT_FOBOSS.
+# Download battery public datasets. If `dataset_name` is set, only the specified dataset will be downloaded. If not set (None), all available preset datasets will be downloaded, including HUST, MATR, CALCE and RWTH.
 download_raw_data(dataset_name='matr')
 
 # Convert data format to BatteryML's unified data format. If `dataset_name` is set, only the specified dataset will be converted. If not set (None), all datasets in the BatteryML/data/raw folder will be processed.

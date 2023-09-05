@@ -88,10 +88,6 @@ HUST_LINKS = (
      'hust_data.zip'),
 )
 
-KIT_FOBOSS_LINKS = (
-    ('https://bwdatadiss.kit.edu/dataitem/download/3555', 'KIT_FOBOSS.zip'),
-)
-
 CALCE_LINKS = (
     ('https://web.calce.umd.edu/batteries/data/CS2_33.zip', 'CS2_33.zip'),
     ('https://web.calce.umd.edu/batteries/data/CS2_34.zip', 'CS2_34.zip'),
@@ -109,7 +105,6 @@ CALCE_LINKS = (
 )
 
 
-
 RWTH_LINKS = (
     ('https://publications.rwth-aachen.de/record/818642/files/Rawdata.zip',
      'raw.zip'),
@@ -123,8 +118,7 @@ def get_links():
         'HUST': HUST_LINKS,
         'MATR': MATR_LINKS,
         'CALCE': CALCE_LINKS,
-        'RWTH': RWTH_LINKS,
-        'KIT_FOBOSS': KIT_FOBOSS_LINKS,
+        'RWTH': RWTH_LINKS
     }
 
 
