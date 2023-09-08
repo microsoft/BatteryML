@@ -8,7 +8,7 @@ from tqdm import tqdm
 from pathlib import Path
 
 from batteryml import BatteryData, CycleData, CyclingProtocol
-
+from scripts.preprocess import tqdm_wrapper
 
 def preprocess(path):
     path = Path(path)
@@ -17,7 +17,7 @@ def preprocess(path):
         for x in path.glob('*HNEI*timeseries*'))
 
     batteries = []
-    for cell in tqdm(cells, desc='Processing HNEI cells', leave=False):
+    for cell in tqdm_wrapper(cells, desc='Processing HNEI cells'):
         timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
         cycle_data_file = next(path.glob(f'*{cell}*cycle_data*'))
         timeseries_df = pd.read_csv(timeseries_file)

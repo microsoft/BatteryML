@@ -8,7 +8,7 @@ from tqdm import tqdm
 from pathlib import Path
 
 from batteryml import BatteryData, CycleData, CyclingProtocol
-
+from scripts.preprocess import tqdm_wrapper
 
 def get_capacity(cell_name):
     capacity = 3.4
@@ -24,7 +24,7 @@ def preprocess(path):
         for x in path.glob('*UL-PUR_N*timeseries*'))
 
     batteries = []
-    for cell in tqdm(cells, desc='Processing UL-PUR cells', leave=False):
+    for cell in tqdm_wrapper(cells, desc='Processing UL-PUR cells'):
         timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
         cycle_data_file = next(path.glob(f'*{cell}*cycle_data*'))
         timeseries_df = pd.read_csv(timeseries_file)
