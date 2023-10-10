@@ -16,9 +16,13 @@ from batteryml.utils.misc import tqdm_wrapper
 
 @PREPROCESSORS.register()
 class MATRPreprocessor(BasePreprocessor):
-    def process(self, *raw_files) -> List[BatteryData]:
-        assert len(raw_files) == 4, 'Missing batches for MATR!'
-        raw_files = [Path(f) for f in raw_files]
+    def process(self, parentdir) -> List[BatteryData]:
+        raw_files = [
+            parentdir /  'MATR_batch_20170512.mat',
+            parentdir /  'MATR_batch_20170630.mat',
+            parentdir /  'MATR_batch_20180412.mat',
+            parentdir /  'MATR_batch_20190124.mat',
+        ]
 
         data_batches = []
         if not self.silent:
