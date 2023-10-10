@@ -8,7 +8,7 @@ import numpy as np
 from tqdm import tqdm
 from pathlib import Path
 
-from src import BatteryData, CycleData, CyclingProtocol
+from batteryml import BatteryData, CycleData, CyclingProtocol
 from scripts.preprocess import tqdm_wrapper
 
 def preprocess(path):

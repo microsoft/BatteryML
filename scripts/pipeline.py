@@ -14,9 +14,9 @@ import numpy as np
 from pathlib import Path
 from datetime import datetime
 
-from src.task import Task
-from src.builders import MODELS
-from src.utils import import_config
+from batteryml.task import Task
+from batteryml.builders import MODELS
+from batteryml.utils import import_config
 
 
 

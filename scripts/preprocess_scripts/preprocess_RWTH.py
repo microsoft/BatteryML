@@ -10,7 +10,7 @@ from tqdm import tqdm
 from numba import njit
 from pathlib import Path
 
-from src import CycleData, BatteryData, CyclingProtocol
+from batteryml import CycleData, BatteryData, CyclingProtocol
 from scripts.preprocess import tqdm_wrapper
 
 @njit

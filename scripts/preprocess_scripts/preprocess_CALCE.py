@@ -12,7 +12,7 @@ from numba import njit
 from pathlib import Path
 from scipy.signal import medfilt
 
-from src import BatteryData, CycleData
+from batteryml import BatteryData, CycleData
 from scripts.preprocess import tqdm_wrapper
 
 @njit
