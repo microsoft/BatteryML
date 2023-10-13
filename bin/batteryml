@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+
+# Licensed under the MIT License.
+# Copyright (c) Microsoft Corporation.
+
+import argparse
+
+from batteryml.preprocess import DOWNLOAD_LINKS, SUPPORTED_SOURCES
+
+
+def main():
+    parser = argparse.ArgumentParser('BatteryML command line utilities.')
+    subparsers = parser.add_subparsers()
+
+    # download command
+    download_parser = subparsers.add_parser(
+        "download", help="Download raw files for public datasets")  
+    download_parser.add_argument(
+        "dataset", choices=list(DOWNLOAD_LINKS.keys()),
+        help="Public dataset to download")  
+    download_parser.add_argument(
+        "output_dir", help="Directory to save the raw data files")
+    download_parser.set_defaults(func=download)
+
+    # preprocess command
+    preprocess_parser = subparsers.add_parser(
+        "preprocess",
+        help="Organize the raw data files into BatteryData and save to disk")
+    preprocess_parser.add_argument(
+        "input_type", choices=SUPPORTED_SOURCES,
+        help="Type of input raw files. For public datasets, specific "
+             "preprocessor will be called. For standard battery test "
+             "output files, the corresponding preprocessing logic "
+             "will be applied.")
+    preprocess_parser.add_argument(
+        "output_dir", help="Directory to save the BatteryData files.")
+    preprocess_parser.add_argument(
+        "-q", "--quiet", "--silent",
+        action="store_true", help="Suppress logs during preprocessing.")
+    preprocess_parser.set_defaults(func=preprocess)
+
+    # run command
+    run_parser = subparsers.add_parser(
+        "run", help="Run the given config for training or evaluation")
+    run_parser.add_argument(
+        "config", help="Path to the config file")
+    run_parser.set_defaults(func=run)
+
+    args = parser.parse_args()
+    args.func(args)
+
+
+def download(args):
+    print('download')
+
+
+def preprocess(args):
+    print(preprocess)
+
+
+def run(args):
+    print('run')
+
+
+if __name__ == "__main__":
+    main()
