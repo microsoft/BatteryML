@@ -16,11 +16,11 @@ class BasePreprocessor:
         self.silent = silent
         self.output_dir = Path(output_dir)
 
-    def process(self, *args, **kwargs) -> List[BatteryData]:
+    def process(self, parentdir: str) -> List[BatteryData]:
         """Main logic for preprocessing data."""
 
-    def __call__(self, *args: Any, **kwargs: Any):
-        batteries = self.process(*args, **kwargs)
+    def __call__(self, parentdir: str):
+        batteries = self.process(parentdir)
         self.dump(batteries)
         if not self.silent:
             self.summary(batteries)

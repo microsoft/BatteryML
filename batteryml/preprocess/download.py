@@ -78,15 +78,19 @@ def download_file(url,
         if total_length is None:
             f.write(response.content)
         else:
-            print(f'[INFO] Downloads saving to {filename}.', flush=True)
             downloaded, total_length = 0, int(total_length)
             total_size = memory2str(total_length)
             bar_format = (
                 '{percentage:3.0f}%|{bar:20}| {desc} '
                 '[{elapsed}<{remaining}{postfix}]')
+            desc = f'Downloads saving to {filename}'
             if update_interval * chunk_size * 100 >= total_length:
                 update_interval = 1
-            with tqdm(total=total_length, bar_format=bar_format) as bar:
+            with tqdm(
+                total=total_length,
+                bar_format=bar_format,
+                desc=desc
+            ) as bar:
                 counter = 0
                 now_time, now_size = time.time(), downloaded
                 for data in response.iter_content(chunk_size=chunk_size):
@@ -105,11 +109,3 @@ def download_file(url,
                         bar.set_postfix_str(f'{speed_size}/s')
 
                         counter = 0
-
-
-class Downloader:
-    def __init__(self, output_dir):
-        self.output_dir = Path(output_dir)
-
-    def download(self):
-        pass

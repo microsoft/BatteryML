@@ -1,4 +1,4 @@
-from .download import Downloader, DOWNLOAD_LINKS
+from .download import DOWNLOAD_LINKS, download_file
 from .preprocess_CALCE import CALCEPreprocessor
 from .preprocess_HNEI import HNEIPreprocessor
 from .preprocess_HUST import HUSTPreprocessor

@@ -3,9 +3,15 @@
 # Licensed under the MIT License.
 # Copyright (c) Microsoft Corporation.
 
+import os
 import argparse
 
-from batteryml.preprocess import DOWNLOAD_LINKS, SUPPORTED_SOURCES
+from pathlib import Path
+
+from batteryml.preprocess import (
+    DOWNLOAD_LINKS, download_file, SUPPORTED_SOURCES
+)
+from batteryml.builders import PREPROCESSORS
 
 
 def main():
@@ -33,9 +39,11 @@ def main():
              "output files, the corresponding preprocessing logic "
              "will be applied.")
     preprocess_parser.add_argument(
+        "raw_dir", help="Directory of raw input files.")
+    preprocess_parser.add_argument(
         "output_dir", help="Directory to save the BatteryData files.")
     preprocess_parser.add_argument(
-        "-q", "--quiet", "--silent",
+        "-q", "--quiet", "--silent", dest="silent",
         action="store_true", help="Suppress logs during preprocessing.")
     preprocess_parser.set_defaults(func=preprocess)
 
@@ -51,11 +59,29 @@ def main():
 
 
 def download(args):
-    print(f'download {args.dataset} to {args.output_dir}')
+    if not os.path.exists(args.output_dir):
+        os.makedirs(args.output_dir)
+    raw_dir = Path(args.output_dir)
+    for f in DOWNLOAD_LINKS[args.dataset]:
+        if len(f) == 2:
+            (url, filename), total_length = f, None
+        else:
+            url, filename, total_length = f
+        download_file(url, raw_dir / filename, total_length=total_length)
 
 
 def preprocess(args):
-    print(preprocess)
+    assert os.path.exists(args.raw_dir), f'Input path not exist: {args.raw_dir}'
+    if not os.path.exists(args.output_dir):
+        os.makedirs(args.output_dir)
+
+    input_path, output_path = Path(args.raw_dir), Path(args.output_dir)
+    processor = PREPROCESSORS.build(dict(
+        name=f'{args.input_type}Preprocessor',
+        output_dir=output_path,
+        silent=args.silent
+    ))
+    processor(input_path)
 
 
 def run(args):
