@@ -13,7 +13,6 @@ from pathlib import Path
 
 from batteryml import CycleData, BatteryData, CyclingProtocol
 from batteryml.builders import PREPROCESSORS
-from batteryml.utils.misc import tqdm_wrapper
 from batteryml.preprocess.base import BasePreprocessor
 
 
@@ -36,7 +35,7 @@ class RWTHPreprocessor(BasePreprocessor):
         with zipfile.ZipFile(subdir / 'Rawdata.zip', 'r') as zip_ref:
             files = zip_ref.namelist()
             if not self.silent:
-                files = tqdm_wrapper(files, desc=desc)
+                files = tqdm(files, desc=desc)
             for file in files:
                 if "BOL" not in file and not (subdir / file).exists():
                     zip_ref.extract(file, subdir)
@@ -46,7 +45,7 @@ class RWTHPreprocessor(BasePreprocessor):
         desc = 'Unzip the zip file of each cell'
         files = list(datadir.glob('*.zip'))
         if not self.silent:
-            files = tqdm_wrapper(files, desc=desc)
+            files = tqdm(files, desc=desc)
         for file in files:
             if not (datadir / f'{file.stem}.csv').exists():
                 with zipfile.ZipFile(file, 'r') as zip_ref:
@@ -54,7 +53,7 @@ class RWTHPreprocessor(BasePreprocessor):
 
         cells = [f'{i:03}' for i in range(2, 50)]
         if not self.silent:
-            cells = tqdm_wrapper(cells)
+            cells = tqdm(cells)
         batteries = []
         for cell in cells:
             name = f'RWTH_{cell}'
@@ -72,7 +71,7 @@ class RWTHPreprocessor(BasePreprocessor):
 
             cycles = []
             desc = f'Processing each cycles of cell {name}'
-            for i in tqdm_wrapper(range(1, len(cycle_ends)), desc=desc):
+            for i in tqdm(range(1, len(cycle_ends)), desc=desc):
                 # Process the cycle data
                 cycle_data = df.iloc[cycle_ends[i-1]:cycle_ends[i]]
                 V = cycle_data['Spannung'].values

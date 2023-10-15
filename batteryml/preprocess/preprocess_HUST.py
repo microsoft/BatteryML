@@ -6,13 +6,13 @@ import pickle
 import zipfile
 import numpy as np
 
+from tqdm import tqdm
 from numba import njit
 from typing import List
 from pathlib import Path
 
 from batteryml import CycleData, BatteryData, CyclingProtocol
 from batteryml.builders import PREPROCESSORS
-from batteryml.utils.misc import tqdm_wrapper
 from batteryml.preprocess.base import BasePreprocessor
 
 
@@ -24,7 +24,7 @@ class HUSTPreprocessor(BasePreprocessor):
         with zipfile.ZipFile(raw_file, 'r') as zip_ref:
             pbar = zip_ref.namelist()
             if not self.silent:
-                pbar = tqdm_wrapper(pbar)
+                pbar = tqdm(pbar)
             for file in pbar:
                 if not self.silent:
                     pbar.set_description(f'Unzip HUST file {file}')
@@ -33,7 +33,7 @@ class HUSTPreprocessor(BasePreprocessor):
         datadir = raw_file.parent / 'our_data'
         cell_files = list(datadir.glob('*.pkl'))
         if not self.silent:
-            cell_files = tqdm_wrapper(
+            cell_files = tqdm(
                 cell_files, desc='Processing HUST cells')
         batteries = []
         for cell_file in cell_files:

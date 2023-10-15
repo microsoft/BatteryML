@@ -8,6 +8,7 @@ import zipfile
 import numpy as np
 import pandas as pd
 
+from tqdm import tqdm
 from numba import njit
 from typing import List
 from pathlib import Path
@@ -15,7 +16,6 @@ from scipy.signal import medfilt
 
 from batteryml import BatteryData, CycleData
 from batteryml.builders import PREPROCESSORS
-from batteryml.utils.misc import tqdm_wrapper
 from batteryml.preprocess.base import BasePreprocessor
 
 
@@ -26,7 +26,7 @@ class CALCEPreprocessor(BasePreprocessor):
         raw_files = [Path(f) for f in path.glob('*.zip')]
         cells = [f.stem for f in raw_files]
         if not self.silent:
-            cells = tqdm_wrapper(cells)
+            cells = tqdm(cells)
         batteries = []
         for cell, raw_file in zip(cells, raw_files):
             rawdatadir = raw_file.parent / cell
@@ -52,7 +52,7 @@ class CALCEPreprocessor(BasePreprocessor):
 
             df = pd.concat([
                 load_txt(file) if file.suffix == '.txt' else load_excel(file)
-                for file in tqdm_wrapper(files, desc='Load data from files')
+                for file in tqdm(files, desc='Load data from files')
             ])
             df = df.sort_values(['date', 'Test_Time(s)'])
             df['Cycle_Index'] = organize_cycle_index(df['Cycle_Index'].values)

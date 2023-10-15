@@ -5,11 +5,11 @@ from typing import List
 import numpy as np
 import pandas as pd
 
+from tqdm import tqdm
 from pathlib import Path
 
 from batteryml import BatteryData, CycleData, CyclingProtocol
 from batteryml.builders import PREPROCESSORS
-from batteryml.utils.misc import tqdm_wrapper
 from batteryml.preprocess.base import BasePreprocessor
 
 
@@ -22,7 +22,7 @@ class ULPURPreprocessor(BasePreprocessor):
             for x in path.glob('*UL-PUR_N*timeseries*'))
 
         batteries = []
-        for cell in tqdm_wrapper(cells, desc='Processing UL-PUR cells'):
+        for cell in tqdm(cells, desc='Processing UL-PUR cells'):
             timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
             cycle_data_file = next(path.glob(f'*{cell}*cycle_data*'))
             timeseries_df = pd.read_csv(timeseries_file)

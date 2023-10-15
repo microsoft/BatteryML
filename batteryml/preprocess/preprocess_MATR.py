@@ -5,13 +5,12 @@ import re
 import h5py
 import numpy as np
 
+from tqdm import tqdm
 from typing import List
-from pathlib import Path
 
 from batteryml.builders import PREPROCESSORS
 from batteryml.preprocess.base import BasePreprocessor
 from batteryml import BatteryData, CycleData, CyclingProtocol
-from batteryml.utils.misc import tqdm_wrapper
 
 
 @PREPROCESSORS.register()
@@ -26,7 +25,7 @@ class MATRPreprocessor(BasePreprocessor):
 
         data_batches = []
         if not self.silent:
-            raw_files = tqdm_wrapper(raw_files)
+            raw_files = tqdm(raw_files)
         for indx, f in enumerate(raw_files):
             if hasattr(raw_files, 'set_description'):
                 raw_files.set_description(f'Loading {f.stem}')
@@ -44,7 +43,7 @@ def load_batch(file, k):
     batch = f['batch']
     num_cells = batch['summary'].shape[0]
     bat_dict = {}
-    for i in tqdm_wrapper(range(num_cells), desc='Processing cells'):
+    for i in tqdm(range(num_cells), desc='Processing cells', leave=False):
         cl = f[batch['cycle_life'][i, 0]][:]
         policy = f[batch['policy_readable'][i, 0]][:].tobytes()[::2].decode()
         summary_IR = np.hstack(

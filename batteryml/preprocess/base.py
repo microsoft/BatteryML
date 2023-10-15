@@ -1,18 +1,16 @@
 # Licensed under the MIT License.
 # Copyright (c) Microsoft Corporation.
 
+from tqdm import tqdm
+from typing import List
 from pathlib import Path
-from typing import Any, List
 from batteryml import BatteryData
-from batteryml.utils.misc import tqdm_wrapper
 
 
 class BasePreprocessor:
     def __init__(self,
-                 name: str,
                  output_dir: str,
                  silent: bool = False):
-        self.name = name
         self.silent = silent
         self.output_dir = Path(output_dir)
 
@@ -27,7 +25,7 @@ class BasePreprocessor:
 
     def dump(self, batteries: List[BatteryData]):
         if not self.silent:
-            batteries = tqdm_wrapper(
+            batteries = tqdm(
                 batteries,
                 desc=f'Dump batteries to {str(self.output_dir)}')
         for battery in batteries:

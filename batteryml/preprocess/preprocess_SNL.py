@@ -4,12 +4,12 @@
 import numpy as np
 import pandas as pd
 
+from tqdm import tqdm
 from typing import List
 from pathlib import Path
 
 from batteryml import BatteryData, CycleData, CyclingProtocol
 from batteryml.builders import PREPROCESSORS
-from batteryml.utils.misc import tqdm_wrapper
 from batteryml.preprocess.base import BasePreprocessor
 
 
@@ -48,7 +48,7 @@ class SNLPreprocessor(BasePreprocessor):
             'SNL_18650_NMC_25C_20-80_0.5-3C_b']
         cells = tuple(cell for cell in cells if cell not in to_drop)
         batteries = []
-        for cell in tqdm_wrapper(cells, desc='Processing SNL cells'):
+        for cell in tqdm(cells, desc='Processing SNL cells'):
             timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
             cycle_data_file = next(path.glob(f'*{cell}*cycle_data*'))
             timeseries_df = pd.read_csv(timeseries_file)
