@@ -82,7 +82,7 @@ def download_file(url,
             total_size = memory2str(total_length)
             bar_format = (
                 f'Downloading {filename}'
-                 '{percentage:3.0f}%|{bar:20}|{desc}'
+                 '|{percentage:3.0f}%|{bar:20}|{desc}'
                  '[{elapsed}<{remaining}{postfix}]')
             if update_interval * chunk_size * 100 >= total_length:
                 update_interval = 1
