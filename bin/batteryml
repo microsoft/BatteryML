@@ -51,7 +51,7 @@ def main():
 
 
 def download(args):
-    print('download')
+    print(f'download {args.dataset} to {args.output_dir}')
 
 
 def preprocess(args):

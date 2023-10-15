@@ -1,0 +1,12 @@
+pandas
+addict
+fire
+numpy>=1.24
+tqdm
+scipy
+scikit-learn
+pyyaml
+numba
+matplotlib
+h5py
+openpyxl
