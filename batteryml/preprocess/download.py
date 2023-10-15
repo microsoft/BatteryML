@@ -81,16 +81,12 @@ def download_file(url,
             downloaded, total_length = 0, int(total_length)
             total_size = memory2str(total_length)
             bar_format = (
-                '{percentage:3.0f}%|{bar:20}| {desc} '
-                '[{elapsed}<{remaining}{postfix}]')
-            desc = f'Downloads saving to {filename}'
+                f'Downloading {filename}'
+                 '{percentage:3.0f}%|{bar:20}|{desc}'
+                 '[{elapsed}<{remaining}{postfix}]')
             if update_interval * chunk_size * 100 >= total_length:
                 update_interval = 1
-            with tqdm(
-                total=total_length,
-                bar_format=bar_format,
-                desc=desc
-            ) as bar:
+            with tqdm(total=total_length, bar_format=bar_format) as bar:
                 counter = 0
                 now_time, now_size = time.time(), downloaded
                 for data in response.iter_content(chunk_size=chunk_size):
