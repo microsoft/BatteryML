@@ -1,6 +1,8 @@
 # Licensed under the MIT License.
 # Copyright (c) Microsoft Corporation.
 
+from __future__ import annotations
+
 import os
 import torch
 import pickle
