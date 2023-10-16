@@ -49,7 +49,7 @@ batteryml preprocess MATR /path/to/save/raw/data /path/to/save/processed/data
 BatteryML supports using a simple config file to specify the training and inference process. We provided several examples in `configs`. For example, to reproduce the "variance" model for battery life prediction, run
 
 ```bash
-batteryml run configs/baselines/sklearn/variance_model/matr_1.yaml --train --eval
+batteryml run configs/baselines/sklearn/variance_model/matr_1.yaml ./workspace/test --train --eval
 ```
 
 ## Documentation
