@@ -11,6 +11,7 @@ from pathlib import Path
 from batteryml.preprocess import (
     DOWNLOAD_LINKS, download_file, SUPPORTED_SOURCES
 )
+from batteryml.pipeline import Pipeline
 from batteryml.builders import PREPROCESSORS
 
 
@@ -52,6 +53,26 @@ def main():
         "run", help="Run the given config for training or evaluation")
     run_parser.add_argument(
         "config", help="Path to the config file")
+    run_parser.add_argument(
+        "workspace", help="Directory to save the checkpoints and predictions.")
+    run_parser.add_argument(
+        "--device", default="cpu", help="Running device")
+    run_parser.add_argument(
+        "--ckpt-to-resume", "--ckpt_to_resume", dest="ckpt_to_resume",
+        help="path to the checkpoint to resume training or evaluation")
+    run_parser.add_argument(
+        "--train", action="store_true",
+        help="Run training. Will skip training if this flag is not provided.")
+    run_parser.add_argument(
+        "--eval", action="store_true",
+        help="Run evaluation. Will skip eval if this flag is not provided.")
+    run_parser.add_argument(
+        "--metric", default="RMSE,MAE,MAPE",
+        help="Metrics for evaluation, seperated by comma")
+    run_parser.add_argument(
+        "--seed", type=int, default=0, help="random seed")
+    run_parser.add_argument(
+        "--epochs", type=int, help="number of epochs override")
     run_parser.set_defaults(func=run)
 
     args = parser.parse_args()
@@ -85,7 +106,26 @@ def preprocess(args):
 
 
 def run(args):
-    print('run')
+    pipeline = Pipeline(args.config, args.workspace)
+    model, dataset = None, None  # Reuse to save setup cost
+    if args.train:
+        model, dataset = pipeline.train(
+            seed=args.seed,
+            epochs=args.epochs,
+            device=args.device,
+            ckpt_to_resume=args.ckpt_to_resume,
+            dataset=dataset)
+    if args.eval:
+        metric = args.metric.split(',')
+        pipeline.evaluate(
+            seed=args.seed,
+            device=args.device,
+            metric=metric,
+            model=model,
+            dataset=dataset,
+            ckpt_to_resume=args.ckpt_to_resume,
+            skip_if_executed=True
+        )
 
 
 if __name__ == "__main__":

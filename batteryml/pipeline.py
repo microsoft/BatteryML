@@ -30,8 +30,7 @@ class Pipeline:
               device: torch.device | str = 'cpu',
               ckpt_to_resume: str | None = None,
               skip_if_executed: bool = True,
-              dataset: DataBundle | None = None,
-              ) -> (BaseModel, DataBundle) | None:
+              dataset: DataBundle | None = None):
         set_seed(seed)
 
         if skip_if_executed and (
@@ -146,7 +145,7 @@ CONFIG_FIELDS = [
 
 def load_config(config_path: str,
                 workspace: str | None,
-                config_fields: list | None
+                config_fields: list | None = None
                 ) -> dict:
     config_path = Path(config_path)
     config_fields = config_fields or CONFIG_FIELDS
@@ -176,7 +175,7 @@ def load_config(config_path: str,
 
 def build_dataset(configs: dict,
                   device: str,
-                  config_fields: list | None):
+                  config_fields: list | None = None):
     strings = []
     config_fields = config_fields or CONFIG_FIELDS[1:]
     for field in config_fields:
