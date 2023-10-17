@@ -46,8 +46,8 @@ class Pipeline:
 
         # Prepare dataset
         if dataset is None:
-            dataset = build_dataset(self.config, device)
-
+            dataset, raw_data = build_dataset(self.config, device)
+            self.raw_data = raw_data
         # Number of epochs override
         if epochs is not None:
             original_epochs = self.config['model'].get('epochs')
@@ -68,6 +68,7 @@ class Pipeline:
         # Restore the origianl epochs in config
         if epochs is not None:
             self.config['model']['epochs'] = original_epochs
+
 
         return model, dataset
 
@@ -91,8 +92,8 @@ class Pipeline:
             return
 
         if dataset is None:
-            dataset = build_dataset(self.config, device)
-
+            dataset, raw_data = build_dataset(self.config, device)
+            self.raw_data = raw_data
         if model is None:
             model = self._prepare_model(ckpt_to_resume, device)
 
@@ -191,18 +192,30 @@ def build_dataset(configs: dict,
     if cache_file.exists():
         print(f'Load datasets from cache {str(cache_file)}.')
         with open(cache_file, 'rb') as f:
-            dataset = pickle.load(f)
+            data = pickle.load(f)
+            dataset = data['dataset']
+            raw_data = data['raw_data']
     else:
-        dataset = Task(
+        task = Task(
             label_annotator=configs['label'],
             feature_extractor=configs['feature'],
             train_test_splitter=configs['train_test_split'],
             feature_transformation=configs['feature_transformation'],
-            label_transformation=configs['label_transformation']).build()
+            label_transformation=configs['label_transformation'])
+
+        dataset = task.build()
+        train_cells, test_cells = task.get_raw_data()
+        data = {'dataset':dataset,
+                'raw_data':{
+                    'train_cells': train_cells,
+                    'test_cells': test_cells,
+                }}
+        raw_data = data['raw_data']
         # store cache
         with open(cache_file, 'wb') as f:
-            pickle.dump(dataset, f)
-    return dataset.to(device)
+            pickle.dump(data, f)
+
+    return dataset.to(device), raw_data
 
 
 def set_seed(seed: int):

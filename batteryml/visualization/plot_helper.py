@@ -108,7 +108,7 @@ def plot_result(ground_truth_y, y_pred):
     cbar.set_label('Cycle life')
 
     # Generate data points for the 45-degree line
-    x_line = np.linspace(0, ground_truth_y.max(), 100)  
+    x_line = np.linspace(ground_truth_y.min(), ground_truth_y.max(), 100)  
     y_line = x_line
 
 
