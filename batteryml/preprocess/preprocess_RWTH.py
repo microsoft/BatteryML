@@ -18,12 +18,12 @@ from batteryml.preprocess.base import BasePreprocessor
 
 @PREPROCESSORS.register()
 class RWTHPreprocessor(BasePreprocessor):
-    def process(self, raw_file) -> List[BatteryData]:
-        raw_file = Path(raw_file)
+    def process(self, parentdir) -> List[BatteryData]:
+        raw_file = Path(parentdir) / 'RWTH.zip'
 
         # Unzip the file first
-        print('[INFO] Unzip the RWTH raw.zip file. There are'
-              ' many levels of compression in this dataset.',
+        print('[INFO] Unzip the RWTH.zip file. There are '
+              'many levels of compression in this dataset.',
               flush=True)
         subdir = raw_file.parent / 'RWTH-2021-04545_818642'
         if not (subdir / 'Rawdata.zip').exists():
