@@ -1,6 +1,7 @@
 # Licensed under the MIT License.
 # Copyright (c) Microsoft Corporation.
 
+from typing import List
 import numpy as np
 import pandas as pd
 
@@ -8,27 +9,38 @@ from tqdm import tqdm
 from pathlib import Path
 
 from batteryml import BatteryData, CycleData, CyclingProtocol
-from scripts.preprocess import tqdm_wrapper
+from batteryml.builders import PREPROCESSORS
+from batteryml.preprocess.base import BasePreprocessor
 
-def preprocess(path):
-    path = Path(path)
-    cells = set(
-        x.stem.split('_timeseries')[0]
-        for x in path.glob('*HNEI*timeseries*'))
 
-    batteries = []
-    for cell in tqdm_wrapper(cells, desc='Processing HNEI cells'):
-        timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
-        cycle_data_file = next(path.glob(f'*{cell}*cycle_data*'))
-        timeseries_df = pd.read_csv(timeseries_file)
-        cycle_data_df = pd.read_csv(cycle_data_file)
-        if len(timeseries_df) == 0:
-            continue
-        timeseries_df, _ = clean_cell(
-            timeseries_df, cycle_data_df, shifts=18)
-        # Capacity is stated here: (https://www.mdpi.com/1996-1073/11/5/1031)
-        batteries.append(organize_cell(timeseries_df, cell, 2.8))
-    return batteries
+@PREPROCESSORS.register()
+class UL_PURPreprocessor(BasePreprocessor):
+    def process(self, parentdir: str) -> List[BatteryData]:
+        path = Path(parentdir)
+        cells = set(
+            x.stem.split('_timeseries')[0]
+            for x in path.glob('*UL-PUR_N*timeseries*'))
+
+        batteries = []
+        for cell in tqdm(cells, desc='Processing UL-PUR cells'):
+            timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
+            cycle_data_file = next(path.glob(f'*{cell}*cycle_data*'))
+            timeseries_df = pd.read_csv(timeseries_file)
+            cycle_data_df = pd.read_csv(cycle_data_file)
+            if len(timeseries_df) == 0:
+                continue
+            timeseries_df, _ = clean_cell(
+                timeseries_df, cycle_data_df, shifts=4)
+            batteries.append(organize_cell(
+                timeseries_df, cell, get_capacity(cell)))
+        return batteries
+
+
+def get_capacity(cell_name):
+    capacity = 3.4
+    if '2.5-96.5' in cell_name:  # Only charge for 94%
+        capacity *= 0.94 * 3.4
+    return capacity
 
 
 def organize_cell(timeseries_df, name, C):
@@ -63,8 +75,8 @@ def organize_cell(timeseries_df, name, C):
         discharge_protocol=discharge_protocol,
         charge_protocol=charge_protocol,
         nominal_capacity_in_Ah=C,
-        min_voltage_limit_in_V=3,
-        max_voltage_limit_in_V=4.3
+        min_voltage_limit_in_V=2.7,
+        max_voltage_limit_in_V=4.2
     )
 
 

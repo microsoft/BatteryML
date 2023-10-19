@@ -6,32 +6,36 @@ import h5py
 import numpy as np
 
 from tqdm import tqdm
-from pathlib import Path
+from typing import List
 
+from batteryml.builders import PREPROCESSORS
+from batteryml.preprocess.base import BasePreprocessor
 from batteryml import BatteryData, CycleData, CyclingProtocol
-from scripts.preprocess import tqdm_wrapper
 
-def preprocess(path):
-    path = Path(path)
-    raw_files = [
-        path / '2017-05-12_batchdata_updated_struct_errorcorrect.mat',
-        path / '2017-06-30_batchdata_updated_struct_errorcorrect.mat',
-        path / '2018-04-12_batchdata_updated_struct_errorcorrect.mat',
-        path / '2019-01-24_batchdata_updated_struct_errorcorrect.mat'
-    ]
 
-    # Load from .mat files
-    data_batches = []
-    pbar = tqdm_wrapper(raw_files)
-    for indx, f in enumerate(pbar):
-        pbar.set_description(f'Loading {f.stem}')
+@PREPROCESSORS.register()
+class MATRPreprocessor(BasePreprocessor):
+    def process(self, parentdir) -> List[BatteryData]:
+        raw_files = [
+            parentdir /  'MATR_batch_20170512.mat',
+            parentdir /  'MATR_batch_20170630.mat',
+            parentdir /  'MATR_batch_20180412.mat',
+            parentdir /  'MATR_batch_20190124.mat',
+        ]
 
-        if not path.exists():
-            raise FileNotFoundError(f'"{f}" not found!')
+        data_batches = []
+        if not self.silent:
+            raw_files = tqdm(raw_files)
+        for indx, f in enumerate(raw_files):
+            if hasattr(raw_files, 'set_description'):
+                raw_files.set_description(f'Loading {f.stem}')
 
-        data_batches.append(load_batch(f, indx+1))
+            if not f.exists():
+                raise FileNotFoundError(f'Batch file not found: {str(f)}')
 
-    return clean_batches(data_batches)
+            data_batches.append(load_batch(f, indx+1))
+
+        return clean_batches(data_batches)
 
 
 def load_batch(file, k):
@@ -39,7 +43,7 @@ def load_batch(file, k):
     batch = f['batch']
     num_cells = batch['summary'].shape[0]
     bat_dict = {}
-    for i in tqdm_wrapper(range(num_cells), desc='Processing cells'):
+    for i in tqdm(range(num_cells), desc='Processing cells', leave=False):
         cl = f[batch['cycle_life'][i, 0]][:]
         policy = f[batch['policy_readable'][i, 0]][:].tobytes()[::2].decode()
         summary_IR = np.hstack(

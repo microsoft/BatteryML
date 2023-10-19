@@ -5,10 +5,63 @@ import numpy as np
 import pandas as pd
 
 from tqdm import tqdm
+from typing import List
 from pathlib import Path
 
 from batteryml import BatteryData, CycleData, CyclingProtocol
-from scripts.preprocess import tqdm_wrapper
+from batteryml.builders import PREPROCESSORS
+from batteryml.preprocess.base import BasePreprocessor
+
+
+@PREPROCESSORS.register()
+class SNLPreprocessor(BasePreprocessor):
+    def process(self, parentdir) -> List[BatteryData]:
+        path = Path(parentdir)
+        cells = set(
+            x.stem.split('_timeseries')[0]
+            for x in path.glob('*timeseries*'))
+        to_drop = [
+            'SNL_18650_NMC_25C_20-80_0.5-0.5C_d',
+            'SNL_18650_LFP_25C_20-80_0.5-3C_a',
+            'SNL_18650_NMC_25C_20-80_0.5-0.5C_a',
+            'SNL_18650_LFP_25C_40-60_0.5-3C_b',
+            'SNL_18650_NMC_25C_40-60_0.5-0.5C_a',
+            'SNL_18650_LFP_25C_40-60_0.5-3C_a',
+            'SNL_18650_NMC_25C_40-60_0.5-0.5C_b',
+            'SNL_18650_LFP_15C_0-100_0.5-1C_a',
+            'SNL_18650_LFP_25C_20-80_0.5-0.5C_b',
+            'SNL_18650_LFP_15C_0-100_0.5-1C_b',
+            'SNL_18650_NMC_25C_20-80_0.5-3C_a',
+            'SNL_18650_LFP_15C_0-100_0.5-2C_a',
+            'SNL_18650_LFP_25C_40-60_0.5-0.5C_b',
+            'SNL_18650_LFP_25C_20-80_0.5-0.5C_c',
+            'SNL_18650_LFP_25C_40-60_0.5-0.5C_a',
+            'SNL_18650_LFP_25C_20-80_0.5-0.5C_d',
+            'SNL_18650_LFP_25C_20-80_0.5-0.5C_a',
+            'SNL_18650_NMC_25C_0-100_0.5-0.5C_a',
+            'SNL_18650_NCA_25C_40-60_0.5-0.5C_a',
+            'SNL_18650_NMC_25C_40-60_0.5-3C_a',
+            'SNL_18650_NMC_25C_20-80_0.5-0.5C_b',
+            'SNL_18650_NMC_25C_40-60_0.5-3C_b',
+            'SNL_18650_NMC_25C_20-80_0.5-0.5C_c',
+            'SNL_18650_NCA_25C_40-60_0.5-0.5C_b',
+            'SNL_18650_NMC_25C_20-80_0.5-3C_b']
+        cells = tuple(cell for cell in cells if cell not in to_drop)
+        batteries = []
+        for cell in tqdm(cells, desc='Processing SNL cells'):
+            timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
+            cycle_data_file = next(path.glob(f'*{cell}*cycle_data*'))
+            timeseries_df = pd.read_csv(timeseries_file)
+            cycle_data_df = pd.read_csv(cycle_data_file)
+            if cell == 'SNL_18650_NCA_25C_0-100_0.5-0.5C_a':
+                se = cycle_data_df['Discharge_Capacity (Ah)'].values < 1.5
+            else:
+                se = False
+            timeseries_df, cycle_data_df = clean_snl_cell(
+                timeseries_df, cycle_data_df, should_exclude=se)
+            batteries.append(organize_cell(timeseries_df, cell))
+        return batteries
+
 
 def get_capacity(cell_name):
     if 'NMC' in cell_name:
@@ -22,54 +75,6 @@ def get_capacity(cell_name):
             return 3.2 * 0.9
         return 3.2
     return 1.1
-
-
-def preprocess(path):
-    path = Path(path)
-    cells = set(
-        x.stem.split('_timeseries')[0]
-        for x in path.glob('*timeseries*'))
-    to_drop = [
-        'SNL_18650_NMC_25C_20-80_0.5-0.5C_d',
-        'SNL_18650_LFP_25C_20-80_0.5-3C_a',
-        'SNL_18650_NMC_25C_20-80_0.5-0.5C_a',
-        'SNL_18650_LFP_25C_40-60_0.5-3C_b',
-        'SNL_18650_NMC_25C_40-60_0.5-0.5C_a',
-        'SNL_18650_LFP_25C_40-60_0.5-3C_a',
-        'SNL_18650_NMC_25C_40-60_0.5-0.5C_b',
-        'SNL_18650_LFP_15C_0-100_0.5-1C_a',
-        'SNL_18650_LFP_25C_20-80_0.5-0.5C_b',
-        'SNL_18650_LFP_15C_0-100_0.5-1C_b',
-        'SNL_18650_NMC_25C_20-80_0.5-3C_a',
-        'SNL_18650_LFP_15C_0-100_0.5-2C_a',
-        'SNL_18650_LFP_25C_40-60_0.5-0.5C_b',
-        'SNL_18650_LFP_25C_20-80_0.5-0.5C_c',
-        'SNL_18650_LFP_25C_40-60_0.5-0.5C_a',
-        'SNL_18650_LFP_25C_20-80_0.5-0.5C_d',
-        'SNL_18650_LFP_25C_20-80_0.5-0.5C_a',
-        'SNL_18650_NMC_25C_0-100_0.5-0.5C_a',
-        'SNL_18650_NCA_25C_40-60_0.5-0.5C_a',
-        'SNL_18650_NMC_25C_40-60_0.5-3C_a',
-        'SNL_18650_NMC_25C_20-80_0.5-0.5C_b',
-        'SNL_18650_NMC_25C_40-60_0.5-3C_b',
-        'SNL_18650_NMC_25C_20-80_0.5-0.5C_c',
-        'SNL_18650_NCA_25C_40-60_0.5-0.5C_b',
-        'SNL_18650_NMC_25C_20-80_0.5-3C_b']
-    cells = tuple(cell for cell in cells if cell not in to_drop)
-    batteries = []
-    for cell in tqdm_wrapper(cells, desc='Processing SNL cells'):
-        timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
-        cycle_data_file = next(path.glob(f'*{cell}*cycle_data*'))
-        timeseries_df = pd.read_csv(timeseries_file)
-        cycle_data_df = pd.read_csv(cycle_data_file)
-        if cell == 'SNL_18650_NCA_25C_0-100_0.5-0.5C_a':
-            se = cycle_data_df['Discharge_Capacity (Ah)'].values < 1.5
-        else:
-            se = False
-        timeseries_df, cycle_data_df = clean_snl_cell(
-            timeseries_df, cycle_data_df, should_exclude=se)
-        batteries.append(organize_cell(timeseries_df, cell))
-    return batteries
 
 
 def organize_cell(timeseries_df, name):

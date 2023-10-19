@@ -4,26 +4,31 @@
 import pandas as pd
 
 from tqdm import tqdm
+from typing import List
 from pathlib import Path
 
 from batteryml import BatteryData, CycleData, CyclingProtocol
-from scripts.preprocess import tqdm_wrapper
+from batteryml.builders import PREPROCESSORS
+from batteryml.preprocess.base import BasePreprocessor
 
-def preprocess(path):
-    path = Path(path)
-    cells = set(
-        x.stem.split('_timeseries')[0]
-        for x in path.glob('*timeseries*'))
-    batteries = []
-    for cell in tqdm_wrapper(cells, desc='Processing OX cells'):
-        timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
-        timeseries_df = pd.read_csv(timeseries_file)
-        # Nominal capacity is 740mAh, which leads to too short
-        # cycle life. No batteries reach 0.74Ah, so we use 0.72Ah
-        # to calculate the cycle life.
-        # https://ora.ox.ac.uk/objects/uuid:03ba4b01-cfed-46d3-9b1a-7d4a7bdf6fac
-        batteries.append(organize_cell(timeseries_df, cell, 0.72))
-    return batteries
+
+@PREPROCESSORS.register()
+class OXPreprocessor(BasePreprocessor):
+    def process(self, parentdir) -> List[BatteryData]:
+        path = Path(parentdir)
+        cells = set(
+            x.stem.split('_timeseries')[0]
+            for x in path.glob('*timeseries*'))
+        batteries = []
+        for cell in tqdm(cells, desc='Processing OX cells'):
+            timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
+            timeseries_df = pd.read_csv(timeseries_file)
+            # Nominal capacity is 740mAh, which leads to too short
+            # cycle life. No batteries reach 0.74Ah, so we use 0.72Ah
+            # to calculate the cycle life.
+            # https://ora.ox.ac.uk/objects/uuid:03ba4b01-cfed-46d3-9b1a-7d4a7bdf6fac
+            batteries.append(organize_cell(timeseries_df, cell, 0.72))
+        return batteries
 
 
 def organize_cell(timeseries_df, name, C):

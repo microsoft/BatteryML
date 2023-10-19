@@ -25,43 +25,32 @@ We hope BatteryML can empower both battery researchers and data scientists to ga
 
 ## Quick Start
 
-### Install the dependencies
+### Install
 
 ```shell
 pip install -r requirements.txt
+pip install .
 ```
+
+This will install the BatteryML into your Python environment, together with a convenient command line interface (CLI) `batteryml`.
+You may also need to [install PyTorch](https://pytorch.org/get-started/locally/) for deep models.
+
 ### Download Raw Data and Run Preprocessing Scripts
-Download the raw data and execute the preprocessing scripts as per the provided [instruction](./dataprepare.md). You can also use the code below to download public datasets and convert them to BatteryML's uniform data format.
+<!-- Download the raw data and execute the preprocessing scripts as per the provided [instruction](./dataprepare.md). You can also use the code below to download public datasets and convert them to BatteryML's uniform data format. -->
+Download raw files of public datasets and preprocess them into `BatteryData` of BatteryML is now as simple as two commands:
 
-```python
-from scripts.download import download_raw_data
-from scripts.preprocess import convert_data_format
-
-# Download battery public datasets. If `dataset_name` is set, only the specified dataset will be downloaded. If not set (None), all available preset datasets will be downloaded, including HUST, MATR, CALCE and RWTH.
-download_raw_data(dataset_name='matr')
-
-# Convert data format to BatteryML's unified data format. If `dataset_name` is set, only the specified dataset will be converted. If not set (None), all datasets in the BatteryML/data/raw folder will be processed.
-convert_data_format(dataset_name='matr')
-
+```bash
+batteryml download MATR /path/to/save/raw/data
+batteryml preprocess MATR /path/to/save/raw/data /path/to/save/processed/data
 ```
 
-### Run Pipeline
-To get started, simply configure the data, features, models, etc. in the config file. Once you've set everything up, run the following code:
-```python
-from scripts.pipeline import Pipeline
+### Run training and/or inference tasks using config files
 
-pipeline = Pipeline(config_path=`path/to/your/config`,
-                    device='cuda',
-                    metric='RMSE',
-                    workspace='workspaces')
+BatteryML supports using a simple config file to specify the training and inference process. We provided several examples in `configs`. For example, to reproduce the "variance" model for battery life prediction, run
 
-train_loss , test_loss = pipeline.train()
+```bash
+batteryml run configs/baselines/sklearn/variance_model/matr_1.yaml ./workspace/test --train --eval
 ```
-Note: Replace `path/to/your/config` with the actual config_path.
-
-Besides, we have prepared an example [baseline](./baseline.ipynb).
-
-
 
 ## Documentation
 
