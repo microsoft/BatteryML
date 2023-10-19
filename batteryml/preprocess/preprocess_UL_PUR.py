@@ -14,7 +14,7 @@ from batteryml.preprocess.base import BasePreprocessor
 
 
 @PREPROCESSORS.register()
-class ULPURPreprocessor(BasePreprocessor):
+class UL_PURPreprocessor(BasePreprocessor):
     def process(self, parentdir: str) -> List[BatteryData]:
         path = Path(parentdir)
         cells = set(

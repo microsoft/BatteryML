@@ -6,7 +6,7 @@ from .preprocess_MATR import MATRPreprocessor
 from .preprocess_OX import OXPreprocessor
 from .preprocess_RWTH import RWTHPreprocessor
 from .preprocess_SNL import SNLPreprocessor
-from .preprocess_UL_PUR import ULPURPreprocessor
+from .preprocess_UL_PUR import UL_PURPreprocessor
 
 
 SUPPORTED_SOURCES = [
