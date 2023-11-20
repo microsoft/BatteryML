@@ -3,6 +3,8 @@
 </div>  
 
 # BatteryML: An Open-Source Tool for Machine Learning on Battery Degradation
+## Recent News
+Our paper BatteryML: [BatteryML](https://arxiv.org/abs/2310.14714), is now available on Arxiv! This paper provides detailed introduction to our design, which we will be actively updating during the development of BatteryML. We appreciate any questions and suggestions!
 
 ## Introduction
 
@@ -50,6 +52,20 @@ BatteryML supports using a simple config file to specify the training and infere
 
 ```bash
 batteryml run configs/baselines/sklearn/variance_model/matr_1.yaml ./workspace/test --train --eval
+```
+
+## Citation
+
+If you find this work useful, we would appreciate citations to the following paper:
+```
+@misc{zhang2023batterymlan,
+      title={BatteryML:An Open-source platform for Machine Learning on Battery Degradation}, 
+      author={Han Zhang and Xiaofan Gui and Shun Zheng and Ziheng Lu and Yuqi Li and Jiang Bian},
+      year={2023},
+      eprint={2310.14714},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
 ```
 
 ## Documentation
