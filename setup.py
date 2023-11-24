@@ -16,7 +16,13 @@ setup(
     url="https://github.com/microsoft/BatteryML",
     packages=find_packages(exclude=['scripts']),
     install_requires=required_packages,
-    scripts=["bin/batteryml"],
+    # Addressing the Windows usage issue
+    # See https://github.com/microsoft/BatteryML/issues/21
+    entry_points={
+        'console_scripts': [
+            'batteryml=bin.batteryml:main',
+        ],
+    },
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Science/Research",
