@@ -23,6 +23,7 @@ from batteryml.models.base import BaseModel
 
 class Pipeline:
     def __init__(self, config_path: Path | str, workspace: Path | str):
+
         self.config_path = config_path
         self.config = load_config(config_path, workspace)
 
@@ -37,7 +38,8 @@ class Pipeline:
 
         if skip_if_executed and (
             self.config['workspace'] is not None
-            and (Path(self.config['workspace']) / 'latest.ckpt').exists()
+            and any(Path(self.config['workspace'])
+                    .glob(f'*seed_{seed}_*.ckpt'))
         ):
             # TODO: maybe we should add a logging util for handling infos
             print(f'Skip training for {self.config["workspace"]} '
@@ -85,7 +87,7 @@ class Pipeline:
         if skip_if_executed and (
             self.config['workspace'] is not None
             and any(Path(self.config['workspace'])
-                    .glob(f'predictions_seed_{seed}_*.ckpt'))
+                    .glob(f'predictions_seed_{seed}_*.pkl'))
         ):
             print(f'Skip evaluation for {self.config["workspace"]} '
                   'as the prediction exists.')
@@ -105,7 +107,7 @@ class Pipeline:
         scores = {
             m: dataset.evaluate(prediction, m) for m in metric
         }
-
+        print(scores)
         ts = timestamp()
 
         if self.config['workspace'] is not None:
@@ -163,7 +165,8 @@ def load_config(config_path: str,
         else:
             workspace = Path(workspace)
     else:
-        workspace = Path.cwd() / 'workspaces' / config_path.stem
+        # workspace = Path.cwd() / 'workspaces' / config_path.stem
+        workspace = Path.cwd() / 'workspaces' / config_path.relative_to('configs').with_suffix('')  
 
     if workspace is not None and workspace.exists():
         assert workspace.is_dir(), workspace
@@ -172,7 +175,7 @@ def load_config(config_path: str,
         os.makedirs(workspace)
 
     configs['workspace'] = workspace
-
+    print(workspace)
     return configs
 
 
@@ -249,3 +252,5 @@ def hash_string(string):
 def timestamp(marker: bool = False):
     template = '%Y-%m-%d %H:%M:%S' if marker else '%Y%m%d%H%M%S'
     return datetime.now().strftime(template)
+
+

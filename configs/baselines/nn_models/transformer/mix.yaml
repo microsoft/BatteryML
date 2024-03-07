@@ -1,5 +1,5 @@
 model:
-    name: 'CNNRULPredictor'
+    name: 'TransformerRULPredictor'
     in_channels: 1
     channels: 16
     input_height: 100

@@ -2,7 +2,7 @@ model:
     name: 'PCRRULPredictor'
     n_components: 12
 train_test_split:
-    name: 'RandomTrainTestSplitter'
+    name: 'CRUHTrainTestSplitter'
     cell_data_path:
         - 'data/processed/CALCE'
         - 'data/processed/RWTH'

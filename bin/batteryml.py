@@ -54,7 +54,7 @@ def main():
     run_parser.add_argument(
         "config", help="Path to the config file")
     run_parser.add_argument(
-        "workspace", help="Directory to save the checkpoints and predictions.")
+        "--workspace", type=str, default=None, help="Directory to save the checkpoints and predictions.")
     run_parser.add_argument(
         "--device", default="cpu", help="Running device")
     run_parser.add_argument(
@@ -73,6 +73,8 @@ def main():
         "--seed", type=int, default=0, help="random seed")
     run_parser.add_argument(
         "--epochs", type=int, help="number of epochs override")
+    run_parser.add_argument(
+        "--skip_if_executed", type=str, default='False', help="skip train/evaluate if the model executed")
     run_parser.set_defaults(func=run)
 
     args = parser.parse_args()
@@ -106,6 +108,8 @@ def preprocess(args):
 
 
 def run(args):
+    # Convert skip_if_executed to boolean  
+    args.skip_if_executed = args.skip_if_executed.lower() in ['true', '1', 'yes']  
     pipeline = Pipeline(args.config, args.workspace)
     model, dataset = None, None  # Reuse to save setup cost
     if args.train:
@@ -114,7 +118,8 @@ def run(args):
             epochs=args.epochs,
             device=args.device,
             ckpt_to_resume=args.ckpt_to_resume,
-            dataset=dataset)
+            dataset=dataset,
+            skip_if_executed=args.skip_if_executed)
     if args.eval:
         metric = args.metric.split(',')
         pipeline.evaluate(
@@ -124,7 +129,7 @@ def run(args):
             model=model,
             dataset=dataset,
             ckpt_to_resume=args.ckpt_to_resume,
-            skip_if_executed=True
+            skip_if_executed=args.skip_if_executed
         )
 
 
