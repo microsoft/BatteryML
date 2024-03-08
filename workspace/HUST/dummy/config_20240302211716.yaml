@@ -1,0 +1,22 @@
+model:
+    name: 'DummyRULPredictor'
+train_test_split:
+    name: 'HUSTTrainTestSplitter'
+    cell_data_path: 'data/processed/HUST'
+feature:
+    name: 'VarianceModelFeatureExtractor'
+    interp_dims: 1000
+    critical_cycles:
+        - 2
+        - 9
+        - 99
+    use_precalculated_qdlin: True
+label:
+    name: 'RULLabelAnnotator'
+feature_transformation:
+    name: 'ZScoreDataTransformation'
+label_transformation:
+    name: 'SequentialDataTransformation'
+    transformations:
+        - name: 'LogScaleDataTransformation'
+        - name: 'ZScoreDataTransformation'
