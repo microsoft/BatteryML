@@ -150,7 +150,6 @@ class MIX100TrainTestSplitter(BaseTrainTestSplitter):
         ]
 
         self.train_cells, self.test_cells = [], []
-        print('self._file_list',self._file_list)
         for filename in self._file_list:
             # filename like: HUST_1-1.pkl
             if filename.stem in test_ids:

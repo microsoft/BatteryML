@@ -45,7 +45,5 @@ class SNLTrainTestSplitter(BaseTrainTestSplitter):
                 self.test_cells.append(filename)
             else:
                 self.train_cells.append(filename)
-        print(self.train_cells)
-        print(self.test_cells)
     def split(self) -> Tuple[List, List]:
         return self.train_cells, self.test_cells

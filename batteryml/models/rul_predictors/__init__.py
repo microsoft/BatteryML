@@ -14,4 +14,4 @@ from .dummy import DummyRULPredictor
 from .ridge import RidgeRULPredictor
 from .gaussian_process import GaussianProcessRULPredictor
 from .transformer import TransformerRULPredictor
-from .xgb import XGBRegressor
+from .xgb import XGBoostRULPredictor
