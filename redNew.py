@@ -12,7 +12,7 @@ FOLDER_PATH="./data/raw/HUST/hust_data/our_data"
 file_list=os.listdir(FOLDER_PATH)
 count=0
 for filename in file_list:
-    # if count>=4:
+    # if count==1:
     #     print('ok')
     #     break
     # count=count+1
@@ -56,10 +56,43 @@ for filename in file_list:
         with open("./data/processed/HUST/reduceTest/other/cycle.pkl", "rb") as f:  # Open in binary reading mode
             data_dict[cell_id]['data'][i] = pickle.load(f)
 
+    # print(data_dict['1-1']['data'].keys())
+    # print(data_dict['1-1']['data'][10])
+    pd.options.mode.chained_assignment = None
+    # import copy
+    new_dict={}
+    new_dict[cell_id] = {'data': {}}
+    for index,current_index in enumerate(data_dict[cell_id]['data'].keys()):
+        new_index=index+1
+        # print(index+1,current_index)
+        new_dict[cell_id]['dq']=data_dict[cell_id]['dq']
+        new_dict[cell_id]['rul']=data_dict[cell_id]['rul']
+        new_dict[cell_id]['data'][new_index] = {
+        'Status': data_dict[cell_id]['data'][current_index]['Status'],
+        'Cycle number': data_dict[cell_id]['data'][current_index]['Cycle number'],
+        'Current (mA)': data_dict[cell_id]['data'][current_index]['Current (mA)'],
+        'Voltage (V)': data_dict[cell_id]['data'][current_index]['Voltage (V)'],
+        'Capacity (mAh)': data_dict[cell_id]['data'][current_index]['Capacity (mAh)'],
+        'Time (s)': data_dict[cell_id]['data'][current_index]['Time (s)']
+    }
+        for cycle_index,now_value in enumerate(new_dict[cell_id]['data'][i]['Cycle number']):
+            # print(cycle_index,now_value,new_index)
+            new_dict[cell_id]['data'][new_index]['Cycle number'][cycle_index]=new_index #TODO
+            print("::::::::::::::::::::::::",new_dict[cell_id]['data'][i]['Cycle number'][cycle_index])
+            # new_dict[cell_id]['data'][new_index]['Cycle number'][j]=j+1
+            # data_dict[cell_id]['data'][i]['Cycle number'][]=
+    data_dict[cell_id]['data']=new_dict[cell_id]['data']
+    # print(data_dict[cell_id]['data'][10])
+    # print(new_dict.keys(),data_dict.keys())
+    # print(new_dict[cell_id].keys(),data_dict[cell_id].keys())
+    # print(new_dict[cell_id]['data'].keys(),data_dict[cell_id]['data'].keys())
+    # print(new_dict[cell_id]['data'][1]['Cycle number'][1])
 
     print("New Number of cycles in the cell: ",len(data_dict[cell_id]['data']))
     print("New Number of data in the cycle: ",len(data_dict[cell_id]['data'][10]))
+    # print("New Number of cycles in the cell: ",len(new_dict[cell_id]['data']))
+    # print("New Number of data in the cycle: ",len(new_dict[cell_id]['data'][10]))
 
-    with open(f"./data/raw/HUST_FINAL_TEST/omg/our_data/{cell_id}.pkl", 'wb') as f:
+    with open(f"./data/raw/HUST_FINAL_TEST/omg/our_data_new/{cell_id}.pkl", 'wb') as f:
             # Write the data to the file using pickle.dump()
             pickle.dump(data_dict, f)

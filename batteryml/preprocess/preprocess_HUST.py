@@ -30,7 +30,7 @@ class HUSTPreprocessor(BasePreprocessor):
         #             pbar.set_description(f'Unzip HUST file {file}')
         #         zip_ref.extract(file, raw_file.parent)
 
-        datadir = raw_file.parent / 'our_data'
+        datadir = raw_file.parent / 'our_data_new'
         cell_files = list(datadir.glob('*.pkl'))
         if not self.silent:
             cell_files = tqdm(
@@ -42,16 +42,17 @@ class HUSTPreprocessor(BasePreprocessor):
             with open(cell_file, 'rb') as fin:
                 cell_data = pickle.load(fin)[cell_id]['data']
             cycles = []
+            # print(cell_data[1])
             for cycle in range(len(cell_data)):
-                print(cycle)
-                df = cell_data[cycle+1]
+                # print(cycle)
+                df = cell_data[cycle + 1]
                 I = df['Current (mA)'].values / 1000.  # noqa
                 t = df['Time (s)'].values
                 V = df['Voltage (V)'].values
                 Qd = calc_Q(I, t, is_charge=False)
                 Qc = calc_Q(I, t, is_charge=True)
                 cycles.append(CycleData(
-                    cycle_number=cycle+1,
+                    cycle_number=cycle + 1,
                     voltage_in_V=V.tolist(),
                     current_in_A=I.tolist(),
                     time_in_s=t.tolist(),
