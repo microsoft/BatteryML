@@ -2,12 +2,22 @@ import pandas as pd
 import pickle
 import os
 import re
+import sys
 
-NUM_OF_AVOIDING_CYCLES=10
-NUM_OF_AVOIDING_SEC=12
+script_name = sys.argv[0]
+arguments = sys.argv[1:]
+
+if len(arguments)==2:
+    NUM_OF_AVOIDING_CYCLES=int(sys.argv[1])
+    NUM_OF_AVOIDING_SEC=int(sys.argv[2])
+else:
+    NUM_OF_AVOIDING_CYCLES=10
+    NUM_OF_AVOIDING_SEC=12
+
+print(NUM_OF_AVOIDING_CYCLES)
+print(NUM_OF_AVOIDING_SEC)
+
 FOLDER_PATH="./data/raw/HUST/hust_data/our_data"
-
-
 
 file_list=os.listdir(FOLDER_PATH)
 count=0
@@ -78,7 +88,7 @@ for filename in file_list:
         for cycle_index,now_value in enumerate(new_dict[cell_id]['data'][i]['Cycle number']):
             # print(cycle_index,now_value,new_index)
             new_dict[cell_id]['data'][new_index]['Cycle number'][cycle_index]=new_index #TODO
-            print("::::::::::::::::::::::::",new_dict[cell_id]['data'][i]['Cycle number'][cycle_index])
+            # print("::::::::::::::::::::::::",new_dict[cell_id]['data'][i]['Cycle number'][cycle_index])
             # new_dict[cell_id]['data'][new_index]['Cycle number'][j]=j+1
             # data_dict[cell_id]['data'][i]['Cycle number'][]=
     data_dict[cell_id]['data']=new_dict[cell_id]['data']
@@ -93,6 +103,6 @@ for filename in file_list:
     # print("New Number of cycles in the cell: ",len(new_dict[cell_id]['data']))
     # print("New Number of data in the cycle: ",len(new_dict[cell_id]['data'][10]))
 
-    with open(f"./data/raw/HUST_FINAL_TEST/omg/our_data_new/{cell_id}.pkl", 'wb') as f:
+    with open(f"./data/raw/HUST_FINAL_TEST/omg/our_data_new_5_12/{cell_id}.pkl", 'wb') as f:
             # Write the data to the file using pickle.dump()
             pickle.dump(data_dict, f)
