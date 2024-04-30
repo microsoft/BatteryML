@@ -1,0 +1,14 @@
+pandas
+addict
+fire
+numpy
+tqdm
+scipy
+scikit-learn
+pyyaml
+numba
+matplotlib
+h5py
+openpyxl
+lightgbm
+optuna
