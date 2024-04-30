@@ -83,3 +83,4 @@ os.system('clear')
 print(res.head)
 
 res.to_csv("optuna-logs\sklearn_models.csv")
+# test
