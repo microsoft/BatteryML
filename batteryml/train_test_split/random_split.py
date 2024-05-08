@@ -38,6 +38,7 @@ class RandomTrainTestSplitter(BaseTrainTestSplitter):
             return result
         random.seed(self.seed)
         shuffled = [str(x) for x in self._file_list]
+        shuffled.sort()
         random.shuffle(shuffled)
         split_point = int(self.p * len(shuffled))
         train, test = shuffled[:split_point], shuffled[split_point:]

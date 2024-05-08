@@ -1,7 +1,8 @@
 model:
     name: 'DummyRULPredictor'
 train_test_split:
-    name: 'RandomTrainTestSplitter'
+    name: 'CRUSHTrainTestSplitter'
+    # name: 'RandomTrainTestSplitter'
     cell_data_path:
         - 'data/processed/CALCE'
         - 'data/processed/RWTH'

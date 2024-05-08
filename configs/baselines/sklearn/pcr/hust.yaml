@@ -1,14 +1,14 @@
 model:
     name: 'PCRRULPredictor'
-    n_components: 12
+    n_components: 2
 train_test_split:
     name: 'HUSTTrainTestSplitter'
     cell_data_path: 'data/processed/HUST'
 feature:
     name: 'VoltageCapacityMatrixFeatureExtractor'
-    diff_base: 8
-    max_cycle_index: 128
-    cycles_to_keep: 128
+    diff_base: 9
+    max_cycle_index: 99
+    cycles_to_keep: 99
 label:
     name: 'RULLabelAnnotator'
 feature_transformation:

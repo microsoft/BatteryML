@@ -46,7 +46,8 @@ class NNModel(BaseModel, nn.Module, abc.ABC):
 
     def fit(self,
             dataset: DataBundle,
-            timestamp: str = None):
+            timestamp: str = None,
+            seed: int = 0):
         self.train()
         train_data = dataset.train_data
         loader = DataLoader(
@@ -72,7 +73,7 @@ class NNModel(BaseModel, nn.Module, abc.ABC):
 
             if self.checkpoint_freq is not None and \
                     (epoch + 1) % self.checkpoint_freq == 0:
-                filename = f'{timestamp}_epoch_{epoch+1}.ckpt'
+                filename = f'{timestamp}_seed_{seed}_epoch_{epoch+1}.ckpt'
                 if self.workspace is not None:
                     self.dump_checkpoint(self.workspace / filename)
                     latest = self.workspace / filename

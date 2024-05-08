@@ -2,13 +2,13 @@ model:
     name: 'MLPRULPredictor'
     in_channels: 1
     channels: 8
-    input_height: 20
+    input_height: 1
     input_width: 1000
     epochs: 100
     batch_size: 128
     evaluate_freq: 100
 train_test_split:
-    name: 'RandomTrainTestSplitter'
+    name: 'CRUSHTrainTestSplitter'
     cell_data_path:
         - 'data/processed/CALCE'
         - 'data/processed/RWTH'

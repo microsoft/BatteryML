@@ -8,7 +8,7 @@ model:
     batch_size: 128
     evaluate_freq: 100
 train_test_split:
-    name: 'RandomTrainTestSplitter'
+    name: 'CRUSHTrainTestSplitter'
     cell_data_path:
         - 'data/processed/CALCE'
         - 'data/processed/RWTH'

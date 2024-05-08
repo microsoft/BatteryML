@@ -1,7 +1,7 @@
 model:
     name: 'DummyRULPredictor'
 train_test_split:
-    name: 'RandomTrainTestSplitter'
+    name: 'MIX100TrainTestSplitter'
     cell_data_path:
         - 'data/processed/CALCE'
         - 'data/processed/RWTH'

@@ -1,0 +1,20 @@
+model:
+    name: 'XGBoostRULPredictor'
+train_test_split:
+    name: 'SNLTrainTestSplitter'
+    cell_data_path: 'data/processed/SNL'
+feature:
+    name: 'VoltageCapacityMatrixFeatureExtractor'
+    diff_base: 2
+    max_cycle_index: 19
+    cycles_to_keep: 19
+label:
+    name: 'RULLabelAnnotator'
+    eol_soh: 0.9
+feature_transformation:
+    name: 'ZScoreDataTransformation'
+label_transformation:
+    name: 'SequentialDataTransformation'
+    transformations:
+        - name: 'LogScaleDataTransformation'
+        - name: 'ZScoreDataTransformation'

@@ -2,7 +2,7 @@ model:
     name: 'PCRRULPredictor'
     n_components: 12
 train_test_split:
-    name: 'RandomTrainTestSplitter'
+    name: 'CRUSHTrainTestSplitter'
     cell_data_path:
         - 'data/processed/CALCE'
         - 'data/processed/RWTH'
@@ -16,6 +16,7 @@ feature:
     cycles_to_keep: 19
 label:
     name: 'RULLabelAnnotator'
+    eol_soh: 0.9
 feature_transformation:
     name: 'ZScoreDataTransformation'
 label_transformation:

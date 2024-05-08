@@ -1,0 +1,29 @@
+model:
+    name: 'TransformerRULPredictor'
+    in_channels: 1
+    channels: 8
+    input_height: 20
+    input_width: 1000
+    epochs: 100
+    batch_size: 128
+    evaluate_freq: 100
+train_test_split:
+    name: 'CRUSHTrainTestSplitter'
+    cell_data_path:
+        - 'data/processed/CALCE'
+        - 'data/processed/RWTH'
+        - 'data/processed/UL_PUR'
+        - 'data/processed/SNL'
+        - 'data/processed/HNEI'
+feature:
+    name: 'VoltageCapacityMatrixFeatureExtractor'
+    diff_base: 2
+    max_cycle_index: 19
+label:
+    name: 'RULLabelAnnotator'
+    eol_soh: 0.9
+label_transformation:
+    name: 'SequentialDataTransformation'
+    transformations:
+        - name: 'LogScaleDataTransformation'
+        - name: 'ZScoreDataTransformation'

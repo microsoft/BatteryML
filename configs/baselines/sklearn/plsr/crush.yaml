@@ -1,9 +1,9 @@
 model:
     name: 'PLSRRULPredictor'
-    n_components: 9
+    n_components: 2
     scale: False
 train_test_split:
-    name: 'RandomTrainTestSplitter'
+    name: 'CRUSHTrainTestSplitter'
     cell_data_path:
         - 'data/processed/CALCE'
         - 'data/processed/RWTH'

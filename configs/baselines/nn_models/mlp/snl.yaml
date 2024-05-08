@@ -2,13 +2,13 @@ model:
     name: 'MLPRULPredictor'
     in_channels: 1
     channels: 32
-    input_height: 20
+    input_height: 1
     input_width: 1000
     epochs: 5000
     batch_size: 128
     evaluate_freq: 100
 train_test_split:
-    name: 'RandomTrainTestSplitter'
+    name: 'SNLTrainTestSplitter'
     cell_data_path: 'data/processed/SNL'
 feature:
     name: 'VoltageCapacityMatrixFeatureExtractor'

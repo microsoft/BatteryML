@@ -2,7 +2,7 @@ model:
     name: 'PCRRULPredictor'
     n_components: 12
 train_test_split:
-    name: 'RandomTrainTestSplitter'
+    name: 'MIX100TrainTestSplitter'
     cell_data_path:
         - 'data/processed/CALCE'
         - 'data/processed/RWTH'
@@ -13,8 +13,8 @@ train_test_split:
 feature:
     name: 'VoltageCapacityMatrixFeatureExtractor'
     diff_base: 8
-    max_cycle_index: 128
-    cycles_to_keep: 128
+    max_cycle_index: 98
+    cycles_to_keep: 98
     use_precalculated_qdlin: True
 label:
     name: 'RULLabelAnnotator'
