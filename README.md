@@ -109,13 +109,11 @@ batteryml run configs/baselines/sklearn/variance_model/matr_1.yaml ./workspace/t
 
 If you find this work useful, we would appreciate citations to the following paper:
 ```
-@misc{zhang2023batterymlan,
-      title={BatteryML:An Open-source platform for Machine Learning on Battery Degradation}, 
-      author={Han Zhang and Xiaofan Gui and Shun Zheng and Ziheng Lu and Yuqi Li and Jiang Bian},
-      year={2023},
-      eprint={2310.14714},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
+@inproceedings{zhang2024batteryml,
+  title={Battery{ML}: An Open-source Platform for Machine Learning on Battery Degradation},
+  author={Han Zhang and Xiaofan Gui and Shun Zheng and Ziheng Lu and Yuqi Li and Jiang Bian},
+  booktitle={The Twelfth International Conference on Learning Representations},
+  year={2024}
 }
 ```
 
