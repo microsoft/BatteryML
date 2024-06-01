@@ -25,7 +25,6 @@ class BasePreprocessor:
         if not self.silent:
             self.summary(batteries)
         
-
     def dump(self, batteries: List[BatteryData]):
         if not self.silent:
             batteries = tqdm(
