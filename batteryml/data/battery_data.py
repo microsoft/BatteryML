@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation.
 
 import pickle
+import csv
+import os
 
 from typing import List
 
@@ -141,7 +143,27 @@ class BatteryData:
     def dump(self, path):
         with open(path, 'wb') as fout:
             pickle.dump(self.to_dict(), fout)
-
+    
+    def dump_csv(self, path):
+        with open(path, 'w', newline='') as fout:
+            writer = csv.DictWriter(fout, self.cycle_data[0].to_dict().keys())
+            writer.writeheader()
+            for cycle in self.cycle_data:
+                for i in range(len(cycle.voltage_in_V)):
+                    row = {
+                        'cycle_number': cycle.cycle_number,
+                        'voltage_in_V': cycle.voltage_in_V[i],
+                        'current_in_A': cycle.current_in_A[i],
+                        'charge_capacity_in_Ah': cycle.charge_capacity_in_Ah[i],
+                        'discharge_capacity_in_Ah': cycle.discharge_capacity_in_Ah[i],
+                        'time_in_s': cycle.time_in_s[i],
+                        'temperature_in_C': None,
+                        'internal_resistance_in_ohm': cycle.internal_resistance_in_ohm,
+                    }
+                    if cycle.temperature_in_C:
+                        row['temperature_in_C'] = cycle.temperature_in_C[i]
+                    writer.writerow(row)
+        
     def print_description(self):
         print(f'**************description of battery cell {self.cell_id}**************')
         for key, val in self.__dict__.items():

@@ -21,18 +21,18 @@ def main():
 
     # download command
     download_parser = subparsers.add_parser(
-        "download", help="Download raw files for public datasets")  
+        "download", help="Download raw files for public datasets.")  
     download_parser.add_argument(
         "dataset", choices=list(DOWNLOAD_LINKS.keys()),
-        help="Public dataset to download")  
+        help="Public dataset to download.")  
     download_parser.add_argument(
-        "output_dir", help="Directory to save the raw data files")
+        "output_dir", help="Directory to save the raw data files.")
     download_parser.set_defaults(func=download)
 
     # preprocess command
     preprocess_parser = subparsers.add_parser(
         "preprocess",
-        help="Organize the raw data files into BatteryData and save to disk")
+        help="Organize the raw data files into BatteryData and save to disk.")
     preprocess_parser.add_argument(
         "input_type", choices=SUPPORTED_SOURCES,
         help="Type of input raw files. For public datasets, specific "
@@ -46,20 +46,22 @@ def main():
     preprocess_parser.add_argument(
         "-q", "--quiet", "--silent", dest="silent",
         action="store_true", help="Suppress logs during preprocessing.")
+    preprocess_parser.add_argument(
+        "--csv", action="store_true", help="Output the processed data as CSV files.")
     preprocess_parser.set_defaults(func=preprocess)
 
     # run command
     run_parser = subparsers.add_parser(
-        "run", help="Run the given config for training or evaluation")
+        "run", help="Run the given config for training or evaluation.")
     run_parser.add_argument(
-        "config", help="Path to the config file")
+        "config", help="Path to the config file.")
     run_parser.add_argument(
         "--workspace", type=str, default=None, help="Directory to save the checkpoints and predictions.")
     run_parser.add_argument(
-        "--device", default="cpu", help="Running device")
+        "--device", default="cpu", help="Running device.")
     run_parser.add_argument(
         "--ckpt-to-resume", "--ckpt_to_resume", dest="ckpt_to_resume",
-        help="path to the checkpoint to resume training or evaluation")
+        help="path to the checkpoint to resume training or evaluation.")
     run_parser.add_argument(
         "--train", action="store_true",
         help="Run training. Will skip training if this flag is not provided.")
@@ -68,13 +70,13 @@ def main():
         help="Run evaluation. Will skip eval if this flag is not provided.")
     run_parser.add_argument(
         "--metric", default="RMSE,MAE,MAPE",
-        help="Metrics for evaluation, seperated by comma")
+        help="Metrics for evaluation, seperated by comma.")
     run_parser.add_argument(
-        "--seed", type=int, default=0, help="random seed")
+        "--seed", type=int, default=0, help="Random seed.")
     run_parser.add_argument(
-        "--epochs", type=int, help="number of epochs override")
+        "--epochs", type=int, help="Number of epochs override.")
     run_parser.add_argument(
-        "--skip_if_executed", type=str, default='False', help="skip train/evaluate if the model executed")
+        "--skip_if_executed", type=str, default='False', help="Skip train/evaluate if the model executed.")
     run_parser.set_defaults(func=run)
 
     args = parser.parse_args()
@@ -102,10 +104,11 @@ def preprocess(args):
     processor = PREPROCESSORS.build(dict(
         name=f'{args.input_type}Preprocessor',
         output_dir=output_path,
-        silent=args.silent
+        silent=args.silent,
+        csv=args.csv
     ))
-    processor(input_path)
 
+    processor(input_path)
 
 def run(args):
     # Convert skip_if_executed to boolean  
