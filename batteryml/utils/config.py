@@ -6,6 +6,7 @@ import yaml
 import os
 from addict import Dict
 
+
 def import_config(path: str, attr: list):
     """_summary_
 
@@ -27,6 +28,18 @@ def import_config(path: str, attr: list):
 
     if not isinstance(attr, list):
         attr = [attr]
+
+    # Check if expected attributes are present in the config file
+    missing_fields = [field for field in attr if field not in config]
+    if missing_fields:
+        raise ValueError(f"Missing expected config fields: {missing_fields}")
+
+    for field in attr:
+        value = config[field]
+        # Check if the value is not None or empty
+        if value is None or (isinstance(value, (str, list)) and not value):
+            raise ValueError(f"Invalid value for config field: {field}")
+
     return {
         field: getattr(config, field) if hasattr(config, field) else {}
         for field in attr
@@ -36,6 +49,7 @@ def import_config(path: str, attr: list):
 class YamlHandler:
     """handle yaml file
     """
+
     def __init__(self, file_path):
         """ YamlHandler init
         Parameters
@@ -44,7 +58,7 @@ class YamlHandler:
             yaml file path of config
         """
         if not os.path.exists(file_path):
-            return FileExistsError(OSError)
+            raise FileNotFoundError(f"The file {file_path} does not exist.")
         self.file_path = file_path
 
     def read_yaml(self, encoding='utf-8'):

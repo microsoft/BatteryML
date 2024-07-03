@@ -18,7 +18,7 @@ from batteryml.preprocess.base import BasePreprocessor
 
 @PREPROCESSORS.register()
 class RWTHPreprocessor(BasePreprocessor):
-    def process(self, parentdir) -> List[BatteryData]:
+    def process(self, parentdir, **kwargs) -> List[BatteryData]:
         raw_file = Path(parentdir) / 'RWTH.zip'
 
         # Unzip the file first
@@ -54,9 +54,18 @@ class RWTHPreprocessor(BasePreprocessor):
         cells = [f'{i:03}' for i in range(2, 50)]
         if not self.silent:
             cells = tqdm(cells)
-        batteries = []
+
+        process_batteries_num = 0
+        skip_batteries_num = 0
         for cell in cells:
             name = f'RWTH_{cell}'
+
+            # judge whether to skip the processed file
+            whether_to_skip = self.check_processed_file(name)
+            if whether_to_skip == True:
+                skip_batteries_num += 1
+                continue
+
             if not self.silent:
                 cells.set_description(f'Processing csv files for cell {name}')
             files = datadir.glob(f'*{cell}=ZYK*Zyk*.csv')
@@ -90,13 +99,14 @@ class RWTHPreprocessor(BasePreprocessor):
             # Remove abnormal cycles
             Qds = np.array([max(x.discharge_capacity_in_Ah) for x in cycles])
             to_remove = remove_abnormal_cycle(Qds)
-            cycles = [cycle for i, cycle in enumerate(cycles) if not to_remove[i]]
+            cycles = [cycle for i, cycle in enumerate(
+                cycles) if not to_remove[i]]
             # Organize cell
             # The nominal capacity is 2.05Ah, but due to quality issue,
             # approximately 1.85Ah each. Cycling between 20% to 80% SoC
             # makes its nominal capacity 1.85 * 0.6 = 1.11 Ah.
             # See https://publications.rwth-aachen.de/record/818642/files/Content_RWTH-2021-04545.pdf  # noqa
-            batteries.append(BatteryData(
+            battery = BatteryData(
                 cell_id=name,
                 cycle_data=cycles,
                 form_factor='cylindrical_18650',
@@ -126,12 +136,18 @@ class RWTHPreprocessor(BasePreprocessor):
                 min_voltage_limit_in_V=3.5,
                 max_voltage_limit_in_V=3.9,
                 max_current_limit_in_A=4
-            ))
+            )
+
+            self.dump_single_file(battery)
+            process_batteries_num += 1
+
+            if not self.silent:
+                tqdm.write(f'File: {battery.cell_id} dumped to pkl file')
 
         # Remove the extracted files
         shutil.rmtree(subdir)
 
-        return batteries
+        return process_batteries_num, skip_batteries_num
 
 
 @njit

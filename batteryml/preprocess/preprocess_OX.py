@@ -14,21 +14,35 @@ from batteryml.preprocess.base import BasePreprocessor
 
 @PREPROCESSORS.register()
 class OXPreprocessor(BasePreprocessor):
-    def process(self, parentdir) -> List[BatteryData]:
+    def process(self, parentdir, **kwargs) -> List[BatteryData]:
         path = Path(parentdir)
         cells = set(
             x.stem.split('_timeseries')[0]
             for x in path.glob('*timeseries*'))
-        batteries = []
+
+        process_batteries_num = 0
+        skip_batteries_num = 0
         for cell in tqdm(cells, desc='Processing OX cells'):
+            # judge whether to skip the processed file
+            whether_to_skip = self.check_processed_file(cell)
+            if whether_to_skip == True:
+                skip_batteries_num += 1
+                continue
+
             timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
             timeseries_df = pd.read_csv(timeseries_file)
             # Nominal capacity is 740mAh, which leads to too short
             # cycle life. No batteries reach 0.74Ah, so we use 0.72Ah
             # to calculate the cycle life.
             # https://ora.ox.ac.uk/objects/uuid:03ba4b01-cfed-46d3-9b1a-7d4a7bdf6fac
-            batteries.append(organize_cell(timeseries_df, cell, 0.72))
-        return batteries
+            battery = organize_cell(timeseries_df, cell, 0.72)
+            self.dump_single_file(battery)
+            process_batteries_num += 1
+
+            if not self.silent:
+                tqdm.write(f'File: {battery.cell_id} dumped to pkl file')
+
+        return process_batteries_num, skip_batteries_num
 
 
 def organize_cell(timeseries_df, name, C):

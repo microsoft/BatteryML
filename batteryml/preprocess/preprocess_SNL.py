@@ -15,7 +15,7 @@ from batteryml.preprocess.base import BasePreprocessor
 
 @PREPROCESSORS.register()
 class SNLPreprocessor(BasePreprocessor):
-    def process(self, parentdir) -> List[BatteryData]:
+    def process(self, parentdir, **kwargs) -> List[BatteryData]:
         path = Path(parentdir)
         cells = set(
             x.stem.split('_timeseries')[0]
@@ -47,8 +47,17 @@ class SNLPreprocessor(BasePreprocessor):
             'SNL_18650_NCA_25C_40-60_0.5-0.5C_b',
             'SNL_18650_NMC_25C_20-80_0.5-3C_b']
         cells = tuple(cell for cell in cells if cell not in to_drop)
-        batteries = []
+
+        process_batteries_num = 0
+        skip_batteries_num = 0
         for cell in tqdm(cells, desc='Processing SNL cells'):
+
+            # judge whether to skip the processed file
+            whether_to_skip = self.check_processed_file(cell)
+            if whether_to_skip == True:
+                skip_batteries_num += 1
+                continue
+
             timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
             cycle_data_file = next(path.glob(f'*{cell}*cycle_data*'))
             timeseries_df = pd.read_csv(timeseries_file)
@@ -59,8 +68,15 @@ class SNLPreprocessor(BasePreprocessor):
                 se = False
             timeseries_df, cycle_data_df = clean_snl_cell(
                 timeseries_df, cycle_data_df, should_exclude=se)
-            batteries.append(organize_cell(timeseries_df, cell))
-        return batteries
+
+            battery = organize_cell(timeseries_df, cell)
+            self.dump_single_file(battery)
+            process_batteries_num += 1
+
+            if not self.silent:
+                tqdm.write(f'File: {battery.cell_id} dumped to pkl file')
+
+        return process_batteries_num, skip_batteries_num
 
 
 def get_capacity(cell_name):

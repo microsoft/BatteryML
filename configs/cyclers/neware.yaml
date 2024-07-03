@@ -1,0 +1,42 @@
+column_names:
+  # columns names of raw_data:
+  # ['Cycle ID', 'Step ID', 'Record ID', 'Time(h:min:s.ms)', 'Voltage(V)', 'Current(mA)', 'Temperature(C)', 'Capacity(mAh)', 'Capacity Density(mAh/g)', 'Energy(mWh)', 'CmpEng(mWh/g)', 'Realtime', 'Min-T(C)', 'Max-T(C)', 'Avg-T(C)', 'Power(mW)', 'Capacitance_Chg(mAh)', 'Capacitance_DChg(mAh)', 'Engy_Chg(mWh)', 'Engy_DChg(mWh)', 'dQ/dV(mAh/V)', 'dQm/dV(mAh/V.g)', 'DCIR(O)']
+  cycle_index: 'Cycle ID'
+  step_index: 'Step ID'
+  voltage: 'Voltage(V)'
+  current: 'Current(mA)'
+  discharge_capacity: 'Capacitance_DChg(mAh)'
+  charge_capacity: 'Capacitance_Chg(mAh)'
+  charge_energy: 'Engy_Chg(mWh)'
+  discharge_energy: 'Engy_DChg(mWh)'
+  date_time: 'Realtime'
+  data_point: 'Record ID'
+  step_time: 'Time(h:min:s.ms)'
+  temperature: 'Temperature(C)'
+  internal_resistance: 'DCIR(O)'
+
+data_types:
+  data_point: 'int32'
+  test_time: 'float64'
+  step_time: 'float32'
+  step_index: 'int16'
+  cycle_index: 'int32'
+  current: 'float32'
+  voltage: 'float32'
+  discharge_capacity: 'float64'
+  charge_capacity: 'float64'
+  charge_energy: 'float64'
+  discharge_energy: 'float64'
+  internal_resistance: 'float32'
+  temperature: 'float32'
+
+# for the conversion of variable units:
+# example:
+# time: ms -> s
+# time: 0.001
+scales:
+  current: 0.001
+  charge_capacity: 0.001
+  discharge_capacity: 0.001
+  charge_energy: 0.001
+  discharge_energy: 0.001
