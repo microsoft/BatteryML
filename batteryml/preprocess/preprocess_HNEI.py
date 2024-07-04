@@ -15,14 +15,21 @@ from batteryml.preprocess.base import BasePreprocessor
 
 @PREPROCESSORS.register()
 class HNEIPreprocessor(BasePreprocessor):
-    def process(self, parent_dir) -> List[BatteryData]:
+    def process(self, parent_dir, **kwargs) -> List[BatteryData]:
         path = Path(parent_dir)
         cells = set(
             x.stem.split('_timeseries')[0]
             for x in path.glob('*HNEI*timeseries*'))
 
-        batteries = []
+        process_batteries_num = 0
+        skip_batteries_num = 0
         for cell in tqdm(cells, desc='Processing HNEI cells'):
+            # judge whether to skip the processed file
+            whether_to_skip = self.check_processed_file(cell)
+            if whether_to_skip == True:
+                skip_batteries_num += 1
+                continue
+
             timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
             cycle_data_file = next(path.glob(f'*{cell}*cycle_data*'))
             timeseries_df = pd.read_csv(timeseries_file)
@@ -32,8 +39,14 @@ class HNEIPreprocessor(BasePreprocessor):
             timeseries_df, _ = clean_cell(
                 timeseries_df, cycle_data_df, shifts=18)
             # Capacity is stated here: (https://www.mdpi.com/1996-1073/11/5/1031)
-            batteries.append(organize_cell(timeseries_df, cell, 2.8))
-        return batteries
+            battery = organize_cell(timeseries_df, cell, 2.8)
+            self.dump_single_file(battery)
+            process_batteries_num += 1
+
+            if not self.silent:
+                tqdm.write(f'File: {battery.cell_id} dumped to pkl file')
+
+        return process_batteries_num, skip_batteries_num
 
 
 def organize_cell(timeseries_df, name, C):

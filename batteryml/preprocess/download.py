@@ -69,7 +69,7 @@ def download_file(url,
         print(f'[INFO] {filename} already exists. Skip it.')
         return
     with open(filename, 'wb') as f:
-        response = requests.get(url, stream=True)
+        response = requests.get(url, stream=True, verify=False)
         if total_length is None:
             total_length = response.headers.get('content-length')
         if response.status_code != 200:
@@ -82,8 +82,8 @@ def download_file(url,
             total_size = memory2str(total_length)
             bar_format = (
                 f'Downloading {filename}'
-                 '|{percentage:3.0f}%|{bar:20}|{desc}'
-                 '[{elapsed}<{remaining}{postfix}]')
+                '|{percentage:3.0f}%|{bar:20}|{desc}'
+                '[{elapsed}<{remaining}{postfix}]')
             if update_interval * chunk_size * 100 >= total_length:
                 update_interval = 1
             with tqdm(total=total_length, bar_format=bar_format) as bar:

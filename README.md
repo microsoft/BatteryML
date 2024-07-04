@@ -96,6 +96,19 @@ batteryml download MATR /path/to/save/raw/data
 batteryml preprocess MATR /path/to/save/raw/data /path/to/save/processed/data
 ```
 
+### Run Cycler Preprocessing Scripts to process your data
+If your data is measured by a cycler such as ARBIN, NEWARE, etc., you can use this command to process your data into `BatteryData` of BatteryML.
+
+```bash
+batteryml preprocess ARBIN /path/to/save/raw/data /path/to/save/processed/data --config /path/to/config/yaml/file
+```
+
+Due to variations in software versions and configurations, the data format and fields exported by the same cycler may differ. Therefore, we have added default processing configurations in the `/configs/cycler` directory to map raw data to target data fields. You can edit these default configurations as needed.
+
+We currently support `ARBIN` and `NEWARE` data formats. Additionally, `Biologic`, `LANDT`, and `Indigo` formats are being integrated.  If you encounter any issues with our cycler processing your data, please submit an issue and attach a sample data file to help us ensure rapid compatibility with your data format.
+
+
+
 ### Run training and/or inference tasks using config files
 
 BatteryML supports using a simple config file to specify the training and inference process. We provided several examples in `configs`. For example, to reproduce the "variance" model for battery life prediction, run

@@ -15,14 +15,21 @@ from batteryml.preprocess.base import BasePreprocessor
 
 @PREPROCESSORS.register()
 class UL_PURPreprocessor(BasePreprocessor):
-    def process(self, parentdir: str) -> List[BatteryData]:
+    def process(self, parentdir: str, **kwargs) -> List[BatteryData]:
         path = Path(parentdir)
         cells = set(
             x.stem.split('_timeseries')[0]
             for x in path.glob('*UL-PUR_N*timeseries*'))
 
-        batteries = []
+        process_batteries_num = 0
+        skip_batteries_num = 0
         for cell in tqdm(cells, desc='Processing UL-PUR cells'):
+            # judge whether to skip the processed file
+            whether_to_skip = self.check_processed_file(cell)
+            if whether_to_skip == True:
+                skip_batteries_num += 1
+                continue
+
             timeseries_file = next(path.glob(f'*{cell}*timeseries*'))
             cycle_data_file = next(path.glob(f'*{cell}*cycle_data*'))
             timeseries_df = pd.read_csv(timeseries_file)
@@ -31,9 +38,16 @@ class UL_PURPreprocessor(BasePreprocessor):
                 continue
             timeseries_df, _ = clean_cell(
                 timeseries_df, cycle_data_df, shifts=4)
-            batteries.append(organize_cell(
-                timeseries_df, cell, get_capacity(cell)))
-        return batteries
+
+            battery = organize_cell(
+                timeseries_df, cell, get_capacity(cell))
+            self.dump_single_file(battery)
+            process_batteries_num += 1
+
+            if not self.silent:
+                tqdm.write(f'File: {battery.cell_id} dumped to pkl file')
+
+        return process_batteries_num, skip_batteries_num
 
 
 def get_capacity(cell_name):

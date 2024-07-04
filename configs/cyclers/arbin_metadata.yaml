@@ -1,0 +1,42 @@
+form_factor: 1
+anode_material: 2
+cathode_material: 3
+nominal_capacity_in_Ah: None
+min_voltage_limit_in_V: None
+max_voltage_limit_in_V: None
+
+charge_protocol:
+  - rate_in_C: 0.5
+    current_in_A: 1.2
+    voltage_in_V: 3.7
+    power_in_W: null
+    start_voltage_in_V: null
+    start_soc: 0.0
+    end_voltage_in_V: 4.2
+    end_soc: 1.0
+  - rate_in_C: 1.0
+    current_in_A: 2.0
+    voltage_in_V: 3.8
+    power_in_W: null
+    start_voltage_in_V: null
+    start_soc: 0.0
+    end_voltage_in_V: 4.1
+    end_soc: 1.0
+
+discharge_protocol:
+  - rate_in_C: 0.5
+    current_in_A: 1.0
+    voltage_in_V: 3.2
+    power_in_W: null
+    start_voltage_in_V: null
+    start_soc: 1.0
+    end_voltage_in_V: 2.5
+    end_soc: 0.0
+  - rate_in_C: 0.8
+    current_in_A: 1.5
+    voltage_in_V: 3.3
+    power_in_W: null
+    start_voltage_in_V: null
+    start_soc: 1.0
+    end_voltage_in_V: 2.7
+    end_soc: 0.0

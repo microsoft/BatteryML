@@ -18,7 +18,7 @@ from batteryml.preprocess.base import BasePreprocessor
 
 @PREPROCESSORS.register()
 class HUSTPreprocessor(BasePreprocessor):
-    def process(self, parentdir) -> List[BatteryData]:
+    def process(self, parentdir, **kwargs) -> List[BatteryData]:
         raw_file = Path(parentdir) / 'hust_data.zip'
 
         with zipfile.ZipFile(raw_file, 'r') as zip_ref:
@@ -35,22 +35,31 @@ class HUSTPreprocessor(BasePreprocessor):
         if not self.silent:
             cell_files = tqdm(
                 cell_files, desc='Processing HUST cells')
-        batteries = []
+
+        process_batteries_num = 0
+        skip_batteries_num = 0
         for cell_file in cell_files:
             cell_id = cell_file.stem
             cell_name = f'HUST_{cell_id}'
+
+            # judge whether to skip the processed file
+            whether_to_skip = self.check_processed_file(cell_name)
+            if whether_to_skip == True:
+                skip_batteries_num += 1
+                continue
+
             with open(cell_file, 'rb') as fin:
                 cell_data = pickle.load(fin)[cell_id]['data']
             cycles = []
             for cycle in range(len(cell_data)):
-                df = cell_data[cycle+1]
+                df = cell_data[cycle + 1]
                 I = df['Current (mA)'].values / 1000.  # noqa
                 t = df['Time (s)'].values
                 V = df['Voltage (V)'].values
                 Qd = calc_Q(I, t, is_charge=False)
                 Qc = calc_Q(I, t, is_charge=True)
                 cycles.append(CycleData(
-                    cycle_number=cycle+1,
+                    cycle_number=cycle + 1,
                     voltage_in_V=V.tolist(),
                     current_in_A=I.tolist(),
                     time_in_s=t.tolist(),
@@ -62,7 +71,7 @@ class HUSTPreprocessor(BasePreprocessor):
             # Skip first problematic cycles
             if cell_name == 'HUST_7-5':
                 cycles = cycles[2:]
-            batteries.append(BatteryData(
+            battery = BatteryData(
                 cell_id=cell_name,
                 cycle_data=cycles,
                 form_factor='cylindrical_18650',
@@ -103,12 +112,17 @@ class HUSTPreprocessor(BasePreprocessor):
                 ],
                 min_voltage_limit_in_V=2.0,
                 max_voltage_limit_in_V=3.6
-            ))
+            )
+            self.dump_single_file(battery)
+            process_batteries_num += 1
+
+            if not self.silent:
+                tqdm.write(f'File: {battery.cell_id} dumped to pkl file')
 
         # Remove the inflated data
         shutil.rmtree(datadir)
 
-        return batteries
+        return process_batteries_num, skip_batteries_num
 
 
 # See https://www.rsc.org/suppdata/d2/ee/d2ee01676a/d2ee01676a1.pdf

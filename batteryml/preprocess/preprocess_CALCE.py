@@ -21,14 +21,22 @@ from batteryml.preprocess.base import BasePreprocessor
 
 @PREPROCESSORS.register()
 class CALCEPreprocessor(BasePreprocessor):
-    def process(self, parentdir) -> List[BatteryData]:
+    def process(self, parentdir, **kwargs) -> List[BatteryData]:
         path = Path(parentdir)
         raw_files = [Path(f) for f in path.glob('*.zip')]
         cells = [f.stem for f in raw_files]
         if not self.silent:
             cells = tqdm(cells)
-        batteries = []
+
+        process_batteries_num = 0
+        skip_batteries_num = 0
         for cell, raw_file in zip(cells, raw_files):
+            # judge whether to skip the processed file
+            whether_to_skip = self.check_processed_file(f'CALCE_{cell}')
+            if whether_to_skip == True:
+                skip_batteries_num += 1
+                continue
+
             rawdatadir = raw_file.parent / cell
             if not rawdatadir.exists():
                 if not self.silent:
@@ -95,7 +103,7 @@ class CALCEPreprocessor(BasePreprocessor):
             if 'CX2_16' == cell.upper():
                 clean_cycles = clean_cycles[1:]
 
-            batteries.append(BatteryData(
+            battery = BatteryData(
                 cell_id=f'CALCE_{cell}',
                 form_factor='prismatic',
                 anode_material='graphite',
@@ -104,12 +112,17 @@ class CALCEPreprocessor(BasePreprocessor):
                 nominal_capacity_in_Ah=C,
                 max_voltage_limit_in_V=4.2,
                 min_voltage_limit_in_V=2.7
-            ))
+            )
+            self.dump_single_file(battery)
+            process_batteries_num += 1
+
+            if not self.silent:
+                tqdm.write(f'File: {battery.cell_id} dumped to pkl file')
 
             # Remove the inflated directory
             shutil.rmtree(rawdatadir)
 
-        return batteries
+        return process_batteries_num, skip_batteries_num
 
 
 @njit

@@ -15,17 +15,18 @@ from batteryml import BatteryData, CycleData, CyclingProtocol
 
 @PREPROCESSORS.register()
 class MATRPreprocessor(BasePreprocessor):
-    def process(self, parentdir) -> List[BatteryData]:
+    def process(self, parentdir, **kwargs) -> List[BatteryData]:
         raw_files = [
-            parentdir /  'MATR_batch_20170512.mat',
-            parentdir /  'MATR_batch_20170630.mat',
-            parentdir /  'MATR_batch_20180412.mat',
-            parentdir /  'MATR_batch_20190124.mat',
+            parentdir / 'MATR_batch_20170512.mat',
+            parentdir / 'MATR_batch_20170630.mat',
+            parentdir / 'MATR_batch_20180412.mat',
+            parentdir / 'MATR_batch_20190124.mat',
         ]
 
         data_batches = []
         if not self.silent:
             raw_files = tqdm(raw_files)
+
         for indx, f in enumerate(raw_files):
             if hasattr(raw_files, 'set_description'):
                 raw_files.set_description(f'Loading {f.stem}')
@@ -35,7 +36,10 @@ class MATRPreprocessor(BasePreprocessor):
 
             data_batches.append(load_batch(f, indx+1))
 
-        return clean_batches(data_batches)
+        batteries_num = clean_batches(
+            data_batches, self.dump_single_file, self.silent)
+
+        return batteries_num
 
 
 def load_batch(file, k):
@@ -100,13 +104,14 @@ def load_batch(file, k):
             'cycle_life': cl,
             'charge_policy': policy,
             'summary': summary,
-            'cycles': cycle_dict}
+            'cycles': cycle_dict
+        }
         key = f'b{k}c' + str(i)
         bat_dict[key] = cell_dict
     return bat_dict
 
 
-def clean_batches(data_batches):
+def clean_batches(data_batches, dump_single_file, silent):
     # remove batteries that do not reach 80% capacity
     # del data_batches[0]['b1c8']
     # del data_batches[0]['b1c10']
@@ -142,12 +147,18 @@ def clean_batches(data_batches):
             data_batches[0][bk]['cycles'][str(last_cycle + j)] = \
                 data_batches[1][batch2_keys[i]]['cycles'][jk]
 
-    cleaned = [
-        organize_cell(batch[cell], cell)
-        for batch in data_batches for cell in batch
-        if cell not in batch2_keys
-    ]
-    return cleaned
+    process_batteries_num = 0
+    skip_batteries_num = 0
+    for batch in data_batches:
+        for cell in batch:
+            if cell not in batch2_keys:
+                battery = organize_cell(batch[cell], cell)
+                dump_single_file(battery)
+                if not silent:
+                    tqdm.write(f'File: {battery.cell_id} dumped to pkl file')
+                process_batteries_num += 1
+
+    return process_batteries_num, skip_batteries_num
 
 
 def organize_cell(data, name):

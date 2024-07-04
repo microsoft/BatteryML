@@ -1,0 +1,37 @@
+column_names:
+  # columns names of raw_data:
+  # ['Test_Time', 'DateTime', 'Step_Time', 'Step_Index', 'Cycle_Index', 'Current', 'Voltage', 'Charge_Capacity', 'Discharge_Capacity', 'Charge_Energy', 'Discharge_Energy', 'dV/dt', 'Internal_Resistance', 'Temperature']
+  test_time: 'Test_Time'
+  date_time: 'DateTime'
+  step_time: 'Step_Time'
+  step_index: 'Step_Index'
+  cycle_index: 'Cycle_Index'
+  current: 'Current'
+  voltage: 'Voltage'
+  charge_capacity: 'Charge_Capacity'
+  discharge_capacity: 'Discharge_Capacity'
+  charge_energy: 'Charge_Energy'
+  discharge_energy: 'Discharge_Energy'
+  _dv/dt: 'dV/dt'
+  internal_resistance: 'Internal_Resistance'
+  temperature: 'Temperature'
+
+  # none:
+  data_point: 'Data_Point'
+    
+data_types:
+  data_point: 'int32'
+  test_time: 'float64'
+  date_time: 'float32'
+  step_time: 'float32'
+  step_index: 'int16'
+  cycle_index: 'int32'
+  current: 'float32'
+  voltage: 'float32'
+  charge_capacity: 'float64'
+  discharge_capacity: 'float64'
+  charge_energy: 'float64'
+  discharge_energy: 'float64'
+  dv/dt: 'float32'
+  internal_resistance: 'float32'
+  temperature: 'float32'

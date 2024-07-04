@@ -10,3 +10,5 @@ numba
 matplotlib
 h5py
 openpyxl
+requests
+xgboost

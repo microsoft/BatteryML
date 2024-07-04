@@ -21,10 +21,10 @@ def main():
 
     # download command
     download_parser = subparsers.add_parser(
-        "download", help="Download raw files for public datasets")  
+        "download", help="Download raw files for public datasets")
     download_parser.add_argument(
         "dataset", choices=list(DOWNLOAD_LINKS.keys()),
-        help="Public dataset to download")  
+        help="Public dataset to download")
     download_parser.add_argument(
         "output_dir", help="Directory to save the raw data files")
     download_parser.set_defaults(func=download)
@@ -34,11 +34,14 @@ def main():
         "preprocess",
         help="Organize the raw data files into BatteryData and save to disk")
     preprocess_parser.add_argument(
-        "input_type", choices=SUPPORTED_SOURCES,
+        "input_type", choices=[value for values in SUPPORTED_SOURCES.values() for value in values],
         help="Type of input raw files. For public datasets, specific "
              "preprocessor will be called. For standard battery test "
              "output files, the corresponding preprocessing logic "
              "will be applied.")
+    preprocess_parser.add_argument(
+        "--config", default="None",
+        help="Path to the config file of Cycler.")
     preprocess_parser.add_argument(
         "raw_dir", help="Directory of raw input files.")
     preprocess_parser.add_argument(
@@ -94,22 +97,24 @@ def download(args):
 
 
 def preprocess(args):
-    assert os.path.exists(args.raw_dir), f'Input path not exist: {args.raw_dir}'
+    assert os.path.exists(
+        args.raw_dir), f'Input path not exist: {args.raw_dir}'
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)
 
+    config_path = Path(args.config)
     input_path, output_path = Path(args.raw_dir), Path(args.output_dir)
     processor = PREPROCESSORS.build(dict(
         name=f'{args.input_type}Preprocessor',
         output_dir=output_path,
         silent=args.silent
     ))
-    processor(input_path)
+    processor(input_path, config_path=config_path)
 
 
 def run(args):
-    # Convert skip_if_executed to boolean  
-    args.skip_if_executed = args.skip_if_executed.lower() in ['true', '1', 'yes']  
+    # Convert skip_if_executed to boolean
+    args.skip_if_executed = args.skip_if_executed.lower() in ['true', '1', 'yes']
     pipeline = Pipeline(args.config, args.workspace)
     model, dataset = None, None  # Reuse to save setup cost
     if args.train:
