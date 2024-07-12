@@ -95,12 +95,16 @@ def download_file(url,
                     counter += 1
                     bar.update(len(data))
                     if counter % update_interval == 0:
-                        ellapsed = time.time() - now_time
+                        elapsed = time.time() - now_time
                         runtime_downloaded = downloaded - now_size
                         now_time, now_size = time.time(), downloaded
 
                         cur_size = memory2str(downloaded)
-                        speed_size = memory2str(runtime_downloaded / ellapsed)
+                        if elapsed > 0:
+                            speed_size = memory2str(
+                                runtime_downloaded / elapsed)
+                        else:
+                            speed_size = '0B/s'
                         bar.set_description(f'{cur_size}/{total_size}')
                         bar.set_postfix_str(f'{speed_size}/s')
 
