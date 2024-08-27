@@ -50,7 +50,7 @@ class HNEIPreprocessor(BasePreprocessor):
 
 
 def organize_cell(timeseries_df, name, C):
-    timeseries_df = timeseries_df.sort_values('Cycle_Index')
+    timeseries_df = timeseries_df.sort_values('Test_Time (s)')
     cycle_data = []
     for cycle_index, df in timeseries_df.groupby('Cycle_Index'):
         if cycle_index < 12:  # First 12 cycles are problematic
@@ -116,10 +116,10 @@ def clean_cell(timeseries_df, cycle_data_df, shifts=2, **kwargs):
         cdfs.append(cdf)
     timeseries_df = pd.concat([
         timeseries_df[~timeseries_df.Cycle_Index.isin(cycle_to_exclude)], *tdfs
-    ]).reset_index(drop=True).sort_values('Cycle_Index')
+    ]).reset_index(drop=True).sort_values('Test_Time (s)')
     cycle_data_df = pd.concat([
         cycle_data_df[~cycle_data_df.Cycle_Index.isin(cycle_to_exclude)], *cdfs
-    ]).reset_index(drop=True).sort_values('Cycle_Index')
+    ]).reset_index(drop=True).sort_values('Test_Time (s)')
     return timeseries_df, cycle_data_df
 
 
