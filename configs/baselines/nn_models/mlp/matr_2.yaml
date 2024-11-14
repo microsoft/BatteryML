@@ -23,3 +23,5 @@ label_transformation:
     transformations:
         - name: 'LogScaleDataTransformation'
         - name: 'ZScoreDataTransformation'
+feature_transformation:
+    name: 'ZScoreDataTransformation'
