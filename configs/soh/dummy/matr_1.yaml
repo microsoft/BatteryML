@@ -1,0 +1,25 @@
+model:
+    name: 'DummyRULPredictor'
+train_test_split:
+    name: 'MATRPrimaryTestTrainTestSplitter'
+    cell_data_path: 'data/processed/MATR'
+feature:
+    name: 'VarianceModelFeatureExtractor'
+    interp_dims: 1000
+    critical_cycles:
+        - 2
+        - 9
+        - 99
+    use_precalculated_qdlin: True
+label:
+    name: 'SOHLabelAnnotator'
+    cycle_index: 300
+    mode: 'relative'  # relative or absolute
+    # soh_filepath: data/exaple_qd_map.json 
+feature_transformation:
+    name: 'ZScoreDataTransformation'
+label_transformation:
+    name: 'SequentialDataTransformation'
+    transformations:
+        - name: 'LogScaleDataTransformation'
+        - name: 'ZScoreDataTransformation'

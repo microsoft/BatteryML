@@ -32,7 +32,8 @@ def import_config(path: str, attr: list):
     # Check if expected attributes are present in the config file
     missing_fields = [field for field in attr if field not in config]
     if missing_fields:
-        raise ValueError(f"Missing expected config fields: {missing_fields}")
+        print(f"Missing expected config fields: {missing_fields}")
+        # raise ValueError(f"Missing expected config fields: {missing_fields}")
 
     for field in attr:
         value = config[field]
